@@ -1,0 +1,52 @@
+FROM ubuntu:16.04
+RUN apt-get -y update && \
+	apt-get clean
+
+# add shaun as a user in the system
+RUN adduser shaun && echo "shaun:shaun" | chpasswd && adduser shaun sudo
+RUN mkdir -p /home/shaun && chown shaun:shaun /home/shaun
+
+# Install sudo x11vnc xvfb fluxbox wget wmctrl
+RUN apt-get install -y sudo x11vnc xvfb fluxbox wget wmctrl
+
+# Install wget and dependencies for VS code
+RUN apt install software-properties-common apt-transport-https wget -y
+
+# Insalling google chrome stable
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+RUN apt-get update && apt-get -y install google-chrome-stable
+
+# defining the machine-id for the system && symlink it to dbus machine-id
+RUN systemd-machine-id-setup
+RUN ln -sf /etc/machine-id /var/lib/dbus/machine-id
+
+# Installing VS code
+RUN wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
+RUN add-apt-repository -y "deb https://packages.microsoft.com/repos/vscode stable main "
+RUN apt update
+RUN apt -y install code
+
+#allow to install a missing file for VS code
+RUN apt-get install libasound2 	
+
+# Installing pulseaudio [to create the audio buffer]
+RUN apt-get update
+RUN apt-get -y install pulseaudio
+
+# Installing ssh [to connect the audio stream to the client]
+# RUN apt-get install openssh-server
+# RUN systemctl enable ssh
+# RUN systemctl start ssh
+
+COPY bootstrap.sh /
+
+RUN chmod +x /bootstrap.sh
+
+CMD '/bootstrap.sh'
+
+## build the Dockerfile with the following command:
+#	docker build -t ubuntu-shaun:16.04 .
+
+## run the Dockerfile with the following command:
+#	docker run --shm-size=2g -p 5900:5900 -e VNC_SERVER_PASSWORD=password --user apps --privileged local/chrome:0.0.1
