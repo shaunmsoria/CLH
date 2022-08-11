@@ -6,11 +6,22 @@ RUN apt-get -y update && \
 RUN adduser shaun && echo "shaun:shaun" | chpasswd && adduser shaun sudo
 RUN mkdir -p /home/shaun && chown shaun:shaun /home/shaun
 
-# Install sudo x11vnc xvfb fluxbox wget wmctrl
-RUN apt-get install -y sudo x11vnc xvfb fluxbox wget wmctrl 
+# Install sudo x11vnc xvfb wget wmctrl
+RUN apt-get install -y sudo x11vnc xvfb wget wmctrl
 
 # Install wget and dependencies for VS code
-RUN apt install software-properties-common apt-transport-https wget -y
+RUN apt install software-properties-common apt-transport-https -y
+
+# Installing git & github cli & kitty & neovim
+RUN apt update -y \
+	&& apt install -y git \
+	&& git config --global user.name "shaunmsoria" \
+	&& git config --global user.email "shaunmsoria@gmail.com" \
+	&& apt install -y gh kitty neovim
+
+# Installing awesome [window manager]
+RUN apt update -y \
+	&& apt install -y awesome
 
 # Insalling google chrome stable
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
@@ -30,19 +41,9 @@ RUN apt -y install code
 # Allow to install a missing file for VS code
 RUN apt-get install libasound2 	
 
-# Installing vim
-RUN apt-get install -y vim
-
-# Installing neovim
-RUN apt-get update -y \
-	&& apt-get install -y neovim
-RUN git config --global user.name "shaunmsoria" \
-	&& config --global user.email "shaunmsoria@gmail.com"
-
-
-# Installing git
-RUN apt update -y \
-	&& apt install -y git
+# Adding the rc.lua for awesome setup
+# RUN rm -f /etc/xdg/awesome/rc.lua
+# ADD rc.lua /etc/xdg/awesome/
 
 # Copying the bootstrap.sh scrip into the container
 COPY bootstrap.sh /
@@ -53,8 +54,11 @@ RUN chmod +x /bootstrap.sh
 # Executing script
 CMD '/bootstrap.sh'
 
-## build the Dockerfile with the following command:
-#	docker build -t ubuntu-shaun:16.04 .
+
+
+# Installing vim
+# RUN apt-get install -y vim
+
 
 ## To run the Basic Dockerfile with the following command:
 #	docker run -p 5900:5900 -e VNC_SERVER_PASSWORD=password --user shaun --privileged ubuntu/shaun:1
