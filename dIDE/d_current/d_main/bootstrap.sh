@@ -8,10 +8,8 @@ readonly G_LOG_E='[ERROR]'
 
 main() {
 	launch_xvfb
-    	launch_window_manager
+	launch_window_manager
 	run_vnc_server
-	cd ~/
-	touch test
 }
 
 launch_xvfb() {

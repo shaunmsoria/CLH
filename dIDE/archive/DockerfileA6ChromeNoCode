@@ -9,7 +9,7 @@ RUN mkdir -p /home/shaun && chown shaun:shaun /home/shaun
 # Install sudo x11vnc xvfb wget wmctrl
 RUN apt-get install -y sudo x11vnc xvfb wget wmctrl
 
-# Install wget and dependencies for VS code
+# Install dependencies for VS code
 RUN apt install software-properties-common apt-transport-https -y
 
 # Installing git & github cli & kitty & neovim
@@ -19,31 +19,36 @@ RUN apt update -y \
 	&& git config --global user.email "shaunmsoria@gmail.com" \
 	&& apt install -y gh kitty neovim
 
-# Installing awesome [window manager]
+# Installing awesome [window manager] & setup with rc.lua
+ADD rc.lua /home/shaun/
 RUN apt update -y \
-	&& apt install -y awesome
-
-# Insalling google chrome stable
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
-    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
-RUN apt-get update && apt-get -y install google-chrome-stable
+	&& apt install -y awesome \
+	&& mkdir /home/shaun/.config \
+	&& mkdir /home/shaun/.config/awesome/ \
+	&& cp /usr/share/awesome/themes/default/theme.lua /home/shaun/.config/awesome/ \
+	&& sudo cat /home/shaun/rc.lua > /etc/xdg/awesome/rc.lua
 
 # Defining the machine-id for the system && symlink it to dbus machine-id
-RUN systemd-machine-id-setup
-RUN ln -sf /etc/machine-id /var/lib/dbus/machine-id
+# RUN systemd-machine-id-setup
+# RUN ln -sf /etc/machine-id /var/lib/dbus/machine-id
 
 # Installing VS code
-RUN wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
-RUN add-apt-repository -y "deb https://packages.microsoft.com/repos/vscode stable main "
-RUN apt update
-RUN apt -y install code
+# RUN wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
+# RUN add-apt-repository -y "deb https://packages.microsoft.com/repos/vscode stable main "
+# RUN apt update
+# RUN apt -y install code
 
 # Allow to install a missing file for VS code
-RUN apt-get install libasound2 	
+# RUN apt-get install libasound2 	
 
-# Adding the rc.lua for awesome setup
-# RUN rm -f /etc/xdg/awesome/rc.lua
-# ADD rc.lua /etc/xdg/awesome/
+# Insalling google chrome stable
+RUN apt update && apt upgrade -y \
+	&& apt install ca-certificates gnupg2 ubuntu-keyring -y \
+	&& wget -O- https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | tee /usr/share/keyrings/google-chrome.gpg \
+	&& echo deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main | tee /etc/apt/sources.list.d/google-chrome.list \
+	&& apt update \
+	&& apt install google-chrome-stable -y \
+	&& chown -R shaun:shaun /home/shaun
 
 # Copying the bootstrap.sh scrip into the container
 COPY bootstrap.sh /

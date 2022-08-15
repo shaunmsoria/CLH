@@ -1,0 +1,82 @@
+FROM golang:1.14-buster AS easy-novnc-build
+WORKDIR /src
+RUN go mod init build \
+	&& go get github.com/geek1011/easy-novnc@v1.1.0 \
+	&& go build -o /bin/easy-novnc github.com/geek1011/easy-novnc
+
+FROM ubuntu:latest
+RUN apt-get -y update && \
+	apt-get clean
+
+# Add shaun as a user in the system
+RUN adduser shaun && echo "shaun:shaun" | chpasswd && adduser shaun sudo
+RUN mkdir -p /home/shaun && chown shaun:shaun /home/shaun
+
+# Install sudo x11vnc xvfb wget wmctrl
+RUN apt-get install -y sudo x11vnc xvfb wget wmctrl
+
+# Install dependencies
+RUN apt install software-properties-common apt-transport-https -y
+
+# install tigervnc-standalone-server supervisor gosu
+RUN apt-get update -y \
+	&& apt-get install -y --no-install-recommends tigervnc-standalone-server supervisor gosu \
+	&& rm -rf /var/lib/apt/lists \
+	&& mkdir -p /usr/share/desktop-directories
+
+RUN apt-get update -y \
+	&& apt-get install -y --no-install-recommends nano openssh-client rsync ca-certificates xdg-utils htop xzip bzip2 zip unzip \
+	&& rm -rf /var/lib/apt/lists
+
+# Installing git & github cli & kitty & neovim
+RUN apt update -y \
+	&& apt install -y git \
+	&& git config --global user.name "shaunmsoria" \
+	&& git config --global user.email "shaunmsoria@gmail.com" \
+	&& apt install -y gh kitty neovim
+
+# Installing awesome [window manager] & setup with rc.lua
+ADD rc.lua /home/shaun/
+RUN apt update -y \
+	&& apt install -y awesome \
+	&& mkdir /home/shaun/.config \
+	&& mkdir /home/shaun/.config/awesome/ \
+	&& cp /usr/share/awesome/themes/default/theme.lua /home/shaun/.config/awesome/ \
+	&& sudo cat /home/shaun/rc.lua > /etc/xdg/awesome/rc.lua
+
+# Insalling google chrome stable
+RUN apt update && apt upgrade -y \
+	&& apt install ca-certificates gnupg2 ubuntu-keyring -y \
+	&& wget -O- https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | tee /usr/share/keyrings/google-chrome.gpg \
+	&& echo deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main | tee /etc/apt/sources.list.d/google-chrome.list \
+	&& apt update \
+	&& apt install google-chrome-stable -y \
+	&& chown -R shaun:shaun /home/shaun
+
+# Copying necessary files
+COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
+COPY supervisord.conf /etc/
+EXPOSE 8080
+
+# Copying the bootstrap.sh scrip into the container
+#COPY bootstrap.sh /
+
+# Making the script executable
+#RUN chmod +x /bootstrap.sh
+
+# Executing script
+#CMD '/bootstrap.sh'
+
+# Creating the volume data and exec gosu supervisord
+RUN groupadd -f --gid 1000 app \
+	&& useradd --home-dir /data --shell /bin/bash --uid 1001 --gid 1000 app \
+	&& mkdir -p /data
+VOLUME /data
+
+CMD ["sh", "-c", "chown app:app /data /dev/stdout && exec gosu app supervisord"] 
+
+## To run the Basic Dockerfile with the following command:
+#	docker run -p 5900:5900 -e VNC_SERVER_PASSWORD=password --user shaun --privileged ubuntu/shaun:1
+
+## To run the image with enough RAM allocation and Memory access
+#	docker run -p 5900:5900 -v ~/Programs/Docker/dFiles/dIDE/volume:/shared-folder-Shaun --shm-size=2g -e VNC_SERVER_PASSWORD=password --user shaun --privileged ubuntu/shaun:1	
