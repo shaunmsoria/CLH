@@ -58,6 +58,27 @@ COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/
 EXPOSE 8080
 
+# Installing pipewire
+RUN apt update \
+	&& apt install -y pipewire \
+	&& apt install -y wireplumber 
+# RUN apt install -y pipewire-pulse qjackctl
+
+# Set the variable PIPE_RUNTIME_DIR for user shaun
+ENV PIPEWIRE_RUNTIME_DIR=/run/user/1000/
+
+# Installing pipewire v1 
+# RUN add-apt-repository ppa:pipewire-debian/pipewire-upstream
+# RUN apt update \
+#	&& apt install pipewire pipewire-audio-client-libraries
+# RUN apt install gstreamer1.0-pipewire libpipewire-0.3-{0,dev,modules} libspa-0.2-{bluetooth,dev,jack,modules} pipewire{,-{audio-client-libraries,pulse,media-session,bin,locales,tests}} 
+	
+
+# Installing pulseaudio
+# RUN apt update -y \
+# 	&& apt install -y pulseaudio \
+#	&& apt install -y pulseaudio-utils
+
 # Copying the bootstrap.sh scrip into the container
 #COPY bootstrap.sh /
 
