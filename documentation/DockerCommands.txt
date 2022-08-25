@@ -1,0 +1,659 @@
+﻿Docker Commands!
+
+
+Docker usages commands:
+sudo docker images
+        Show all docker images on the computer
+sudo docker run -ti REPOSITORY:TAG bash
+	Create a container from the image with the specified
+	REPOSITORY:TAG
+	EX: sudo docker run -ti ubuntu:latest bash
+sudo docker run --rm -ti REPOSITORY sleep 5
+        --rm to remove the process after completion
+        -ti to have terminal interactive in the container
+        Sleep 5 to have the container sleeping for 5 seconds
+sudo docker run -ti ubuntu bash -c “sleep 3; echo all done”
+        bash -c means execute the following instruction in bash
+sudo docker run -d -ti ubuntu bash
+        Create a container from the ubuntu image and detach its 
+	processing, meaning the container process will continue to run
+	in the background
+// 
+to leave a running container without terminating it use ctr+p,ctr+q 
+//
+sudo docker exec -ti repositoryName bash
+        will allow another terminal to execute a bash in the specified 
+	container
+sudo docker attach containerName
+        will allow us to jump in a detached running container
+sudo docker ps
+        Show containers currently running
+sudo docker ps -a
+        Show all containers
+sudo docker ps -l
+        Show latest container
+
+
+sudo docker commit containerID
+        Create an image from an existing container
+sudo docker tag imageID NAME
+        Associate REPOSITORY name to a docker image
+sudo docker commit containerName repositoryName
+        Create an image from the specified container and give it a
+        repositoryName
+        Ex: sudo docker commit happy_poitras my-image-2
+sudo docker commit containerName repositoryName:tagName
+        will create an image with the specified repositoryName and 
+	tagName
+sudo docker logs containerName
+        allows to keep the output logs of the specified container
+
+
+sudo docker kill containerName 
+        stop a container from running
+sudo docker rm containerName
+        remove container from the system
+sudo docker run --memory maxAllowedMemory imageName command
+        run a container with a CPU limit
+sudo docker run --cpu--shares 
+        relative to other containers
+sudo docker run --cpu--quota 
+	to limit it in general
+
+
+// Network Docker //
+sudo docker run --rm -ti -p 45678:45678 -p 45679:45679 --name echo-server ubuntu:14.04 bash
+        run a container with publish ports 45678:45678 (in and out ports) and 45679:45679 ports 
+        as well with the name echo-server running ubuntu:14.04 with a bash shell
+nc -lp 45678 | nc -lp 45679
+        use netcap to manage servers / netcap need to be installed
+	here we listen to port (-lp) 45678 and we send the result to port 45679  
+
+
+sudo docker run --rm -ti -p 45678 -p 45679 --name echo-server ubuntu:14.04 bash
+        we  can let docker choose the port from the available options
+sudo docker port serverName
+        will show the available ports docker chose for the specified container
+
+
+sudo docker run -p outside-port:inside-port/protocol (tcp/udp)
+        Ex: sudo docker -p 1234:1234/udp
+        Ex1: sudo docker run --rm -ti -p 45678/udp --name echo-server ubuntu:14.04 bash 
+        Ex1: nc -ulp portNumber
+        Ex1 on separate terminal: nc -u ipAddress portNumber
+
+
+sudo docker network ls
+        allows to see the network status
+sudo docker network create networkName
+        create a new network of type bridge
+sudo docker run --rm -ti --net networkName --name containerName ubuntu:14.04 bash
+        create a container attached to the networkName network with containerName and 
+running a bash on ubuntu:14.04 system
+        Ex: sudo docker run --rm -ti --net learning --name catserver ubuntu:14.04 bash
+
+
+ping containerName 
+        will ping the containerName
+
+
+sudo docker network connect networkName containerName
+        will allocate containerName to the network referred as networkName
+
+
+sudo docker –rm -ti -e nameVariable=contentVariable –name serverName ubuntu:14.04 bash
+        will create server container which will store nameVariable content which will be
+	accessible to the server and anyone connecting to the server
+sudo docker run --rm -ti --link serverName1 --name serverName2 ubuntu:14.04 bash
+        will create and link the server container serverName2 to serverName1
+        Communication can only go from serverName2 to serverName1 
+        It will also copy environment variables from serverName1 to serverName2
+
+
+// 
+Example of name structure:
+registry.example.com:port/organisation/image-name:version-tag
+You can leave the parts you don’t need
+organisation/image-name is often enough
+//
+
+
+docker pull
+        will download an image to your local system, run as part of docker run
+docker push
+        will upload an image to docker repository
+
+
+docker rmi image-name:tag
+        remove docker image
+docker rmi image-id
+        remove docker image
+
+
+// Volumes //
+Volumes are disks where containers can store data
+It can be shared between containers, with the host or both
+There are 2 types of discs:
+        Persistent: remaining on host even when all containers are removed
+        Ephemeral: which only remains until the last containers using it is removed (stay only 
+when used)
+Discs are not part of any images, and therefore are not uploaded or downloaded from docker repository.
+It’s just data stored on the host for local use only.
+
+
+________________
+
+
+sudo docker run -ti -v pathToSharedDirectory:/pathWhereFolderWillBeSharedInContainer ubuntu bash
+Ex: docker run -ti -v 
+/home/shaun/Documents/Tutorials/Docker/practice/example:/shared-folder ubuntu bash
+// to share a file it’s the same process except we need to share the path to the file including the filename 
+The file has to exist otherwise docker will assume it’s a folder//
+
+
+sudo docker run -ti -v /pathWhereFolderWillBeSharedInContainer ubuntu bash
+	Ex: docker run -ti -v /shared-data ubuntu bash
+sudo docker run -ti --volumes-from containerNameToShareVolumeFrom ubuntu bash
+        will give this container access to volumes created in containerName and become a 
+	shared ephemeral container
+
+
+// Docker Registries //
+Registries are software managing and distributing images
+We can access Docker’s company ones for free
+We can create and run our own registries
+
+
+docker search command
+        Ex: docker search ubuntu
+http://hub.docker.com 
+        will allow you to search for images on docker website
+docker login
+        will allow to log to docker registry
+docker pull debian:sid
+        will allow to download debian:sid in a docker container
+docker tag debian:sid solarisay/test-image-42:v99.9
+        will rename the container to test-image-42:v99.9
+
+
+sudo docker push solarisray/test-image-42:v99.9
+        will push the container to the docker repository
+
+
+
+
+// Dockerfile //
+Dockerfile are programs defined to build images
+docker build -t nameOfResult . 
+        build an image with the nameOfResult at the current directory with .
+https://docs.docker.com/engine/reference/builder
+        For more reference on dockerfiles
+________________
+
+
+
+
+// Example1 of Dockerfile:
+FROM busybox
+RUN echo "build simple docker image."
+CMD echo "hello container."
+
+
+Then run the following command to build the file:
+docker build -t hello .
+//
+
+
+//Example2 of Dockerfile:
+FROM debian:sid
+RUN apt-get -y update
+RUN apt-get install nano
+CMD ["bin/nano", "/tmp/notes"] //run cmd bin/nano with the argument 
+/tmp/notes
+
+
+Then run the following cmd to build the file:
+docker build -t example/nanoer .
+//
+
+
+//Example3 of Dockerfiles
+FROM example/nanoer
+ADD notes.txt /notes.txt
+CMD ["bin/nano", "/notes.txt"]
+
+
+In the notes.txt file:
+TODO: learn more about dockerfiles
+
+
+Then run the following cmd to build the file:
+docker build -t example/notes .
+
+
+Then run the following cmd to run the docker image:
+docker run –rm -ti example/notes
+//
+
+
+// Dockerfile commands
+FROM defines from which image to download and start from.
+        Should always be the first cmd in a dockerfile
+        It’s ok to have multiple FROM in a dockerfile, which means it needs to create multiple 
+Images
+
+
+MAINTAINER documentation defining who is responsible to maintain this image
+        MAINTAINER Firstname Lastname <email@example.com>
+RUN runs the cmd line, waits for it to finish, and saves the result
+        RUN unzip install.zip /opt/install
+        RUN echo hello docker
+
+
+ADD adds local files
+        ADD run.sh /run.sh                 // add run.sh to the image a location /run.sh
+        ADD project.tar.gz /install/        // add the uncompressed version of the tar.gz file to the 
+/install/ directory
+        
+        ADD https://address.com/download/project.rpm /project/        
+// will download the file specified at that address and store its content in /project/ 
+directory
+
+
+ENV Sets environment variables, both during the build and when running the result
+ENV DB_HOST=db.production.example.com
+ENV DB_PORT=5432        
+
+
+ENTRYPOINT specifies the start of the command to run
+        Ex ENTRYPOINT ls will take the argument from what will be typed after the 
+docker run -rm -ti imageName arg1 arg2 …
+
+
+CMD specifies the whole cmd to run, if arg are specified after the docker run cmd they will replace the args originally stated in the CMD statement
+
+
+ENTRYPOINT and CMD can be combined
+
+
+ENTRYPOINT help users to use the dockerfiles as programs
+
+
+ENTRYPOINT RUN and CMD can use either: Shell Form & Exec Form
+        Shell form is like: nano notes.txt
+        Exec form is like: [“/bin/nano”, “notes.txt”]
+
+
+EXPOSE maps a port into the container
+        EXPOSE 8080                 // = -p 8080:8080
+
+
+VOLUME defines shared or ephemeral volumes
+        VOLUME [“/host/path/” “/container/path/”]        
+// if 2 paths specified will map a host path into a container path
+VOLUME [“/shared-data”] 
+        // if 1 path, create a volume that can be inherited by other containers
+
+
+Avoid using shared folders with the host because it means that the containers won’t be able to be used by other users when pushing it.
+
+
+WORKDIR set the directory the container starts in
+        WORKDIR /install/        // means all the container cmd will run from that directory
+
+
+USER sets which user the container will run in
+        USER shaun                 // means the cmds in that container to run as the user shaun
+        USER 1000
+
+
+Consult the link below for more cmds and details:
+https://docs.docker.com/engine/reference/builder
+
+
+// Multi-project Docker files
+We created a Dockerfile as below:
+
+
+FROM ubuntu:16.04
+RUN apt-get update
+RUN apt-get -y install curl
+RUN curl https://google.com | wc -c > google-size
+ENTRYPOINT echo google is this big; cat google-size
+
+
+When we executed this build with:
+docker build -t tooo-big .
+And run it with
+docker run --rm tooo-big
+Its shows: 
+google is this big
+220
+
+
+But the size with docker images is 182mb
+
+
+Now if we change the Dockerfile to the following:
+
+
+FROM ubuntu:16.04 as builder
+RUN apt-get update
+RUN apt-get -y install curl
+RUN curl https://google.com | wc -c > google-size
+
+
+FROM alpine
+copy --from=builder /google-size /google-size
+ENTRYPOINT echo google is this big; cat google-size
+________________
+
+
+After being built with docker build -t google-size .
+And run with docker run --rm google-size
+It produced the same result:
+google is this big
+220
+
+
+With a docker images size of 5.52mb
+
+
+// Avoid the Golden Image //
+It replaces a canonical build with a locally-modified revision.
+Canonical build: means an image constructed from scratch
+
+
+To avoid the Golden Image do the following:
+1. Include the installers in your project
+2. Have a canonical build that builds everything completely from scratch
+3. Tag your builds with the git hash of the code that built it
+4. Use small base images, such as Alpine
+5. Build images you share publicly from Dockerfiles, always
+6. Don’t ever leave pwd in lawyers; delete files in the same step!
+
+
+// Kernels //
+Kernels run directly on the hardware
+-Respond to messages from the hardware
+-Start and schedule programs
+-Control and organise storage
+-Pass messages between programs
+-Allocate resources, memory, CPU, network and so on…
+-Create containers by Docker configuring the kernel
+
+
+What Docker Does:
+-Program written in Go
+-Manages kernel features
+Uses “cgroups” (or control groups) to contain processes together to give the idea they are being contained in their own world
+Uses “namespaces” to contain networks, feature of the linux kernel to split the networking stack [1 set of addresses for 1 container, another set of addresses for another container…]
+Uses “copy-on-write” filesystems to build images
+-Used for years before Docker
+-Makes scripting distributed systems “easy”*
+
+
+-Docker is divided into 2 programs: a client and a server
+-The server receives commands over a socket (either over a network or through a “file”)
+-The client can even run inside docker itself
+The socket is stored at /var/run/docker.sock file
+docker run -ti --rm -v /var/run/docker.sock:/var/run/docker.sock docker sh
+        will run a container with a shared volume with the docker.sock file, that container will be 
+        Created from the docker image and will run a shell
+
+
+It allows creating a client inside a container controlling a server from that container.
+Docker is very flexible to use
+
+
+// Networking and namespaces //
+-Ethernet: moves “frames” on a wire (or Wi-Fi)
+-IP layer: moves packets on a local network 
+-Routing: forwards packets between networks
+-Ports: address particular programs on a computer
+
+
+-Docker uses bridges to create virtual networks in your computer
+-These are software switches
+-They control the Ethernet layer
+-You can turn off this protection with
+docker run --net=host options image-name command 
+-They allow processes to be attached to private network segments
+-These private networks are bridged into a shared network with the rest of the containers
+-Containers have virtual network “cards”
+-Containers get their own copy of the networking stack
+
+
+docker run -ti --rm --net=host ubuntu:16.04 bash
+        will create a container with host network stack, and will run bash on ubuntu:16.04
+apt-get update && apt-get install bridge-utils
+        will update the system and install bridge-utils in this container
+brctl show
+        will show the bridge network status
+docker network create my-new-network
+        will create a new network called my-new-network in a separate terminal
+
+
+//Routing//
+-Creates “firewall” rules to move packets between networks
+-NAT (Network Address Translation)
+-Change the source address on the way out
+-Change the destination address on the way back in
+
+
+We can use the following command to see the Linux table nat
+        sudo iptables -n -L -t nat
+
+
+docker run -ti --rm --net=host --privileged=true ubuntu bash
+        will create a container with the same net authorisation then the host and has all 
+privileges
+apt-get update
+        will update the bash contained in this container
+
+
+apt-get install iptables
+        will allow you to see the iptables ( process necessary for mac and windows, linux can be 
+accessed directly with sudo iptables -n -L -t nat )
+iptables -n -L -t nat 
+        will show the nat table
+
+
+docker run -ti --rm -p 8080:8080 ubuntu bash
+        will create another container listening to port 8080, need to be run in another terminal
+iptables -n -L -t nat 
+        will show the nat table with the container created above stating packages sent to the host at port 8080 need to be forwarded to the container at  172.17.0.2:8080 
+
+
+-”Exposing” a port is really “port forwarding”
+
+
+// Processes and cgroups //
+-Processes come from other processes — parent - child relationship 
+-When a child process exits, it returns an exit code to its parent
+-Process Zero is special, called init, the process that starts the rest
+-In Docker, your container starts with an init process and vanishes when that process exits
+
+
+docker inspect --format ‘{{.State.Pid}}’ hello
+        will find the process id => Pid of the container referred as hello it will return a nb 
+here:51193        
+docker run -ti --rm --privileged=true --pid=host ubuntu bash
+        will create a container with privileged true and pid=host which shutdown most of the 
+safeties 
+kill 51193
+        will stop the container with this PID
+
+
+-Docker purpose is to control access to the limited resources on the machine
+-Scheduling CPU time
+-Memory allocation limits
+-Inherited limitations and quotas
+-Can’t escape your limits by starting more processes
+________________
+
+
+// Storage //
+-Actual storage devices (hard drives…)
+-Logical storage devices (ipartition drives on into groups)
+-Filesystems (determine which byte in which drive in part of which file)
+-FUSE filesystems and network filesystems (programs which pretend to be filesystems)
+
+
+The secret of Docker is:
+COWs = Copy-On-Write
+        Allows to create a version of a file from different files without altering the source file.
+        This new file will be written on the COW layer next to the original files.
+        We only copy the files we write => Copy On Write
+-The contents of layers are moved between containers in gzip files and assembled at the container layer.
+-Containers are independent of the storage engine
+-Any container can be loaded (almost) anywhere
+-It is possible to run out of layers on some of the storage engines
+
+
+
+
+// Volumes and Bind Mounting //
+-The Linux VFS ( Virtual File System )
+- Mounting devices on the VFS, in Linux everything is mounted from the root of the tree /
+- Mounting directories on the VFS ( can attach directories somewhere else in the VFS)
+
+
+docker run -ti --rm --privileged=true ubuntu bash
+        Create a container with necessary permissions to modify the VFS
+
+
+mount -o bind folderA folderB
+        will mount folderA on top of folderB
+ls -R 
+        From the base directory containing folderA and folderB will show all the files contained in 
+those folders
+It will show that the content of folderA shows instead of content of folderB
+umount folderA
+        will umount folderA from folderB, and by doing a ls -R on the base directory, will show 
+folderB content again 
+
+
+-Getting the mount order correct, is very important other -v volume of a container can hide a file or folder under another content if not mounted in the correct order
+-Mounting volumes - always mounts the host’s filesystem over the guest
+________________
+
+
+// Docker Registry //
+-Is a program
+-Stores layers and images
+-Listens on (usually) port 5000
+-Maintains an index and searches tags
+-Authorises and authenticates connections (sometime)
+-The official Python Docker Registry (popular registry)
+-Nexus (is also popular)
+-Docker makes installing network services (reasonably) easy
+-The registry is a Docker service
+
+
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+        will create a container exposed to port 5000 detached from the terminal that will always
+        Restart if killed named registry created from registry image version 2
+docker tag ubuntu:14.04 localhost:5000/mycompany/my-ubuntu:99
+        will tag an image of ubuntu:14.04 to localhost:5000/mycompany/my-ubuntu with the tag 
+99
+
+
+If you want to set up your own registry on the internet, go to the link below to set authentication and authorisation:
+https://docs.docker.com/registry/
+
+
+Storage Options:
+-Local storage (same machine than where the registry is stored)
+- https://docs.docker.com/ee/dtr        (from the developer of docker)
+- https://console.aws.amazon/ecs/home?region=us-east-1#/repositories
+- https://cloud.google.com/container-registry
+- https://azure.microsoft.com/en-us/services/container-registry
+- docker save
+- docker load (allows to save/load images locally without a registry) 
+- Migrating between storage types (with docker save and load is easier)
+-Shipping images on disks (or never underestimate the bandwidth of a thumb drive in a jetliner)
+
+
+docker save -o my-images.tar.gz debian:sid busybox ubuntu:14.04
+        will create an outputting  an image named my-images.tar.gz including debian:sid ….
+
+
+docker rmi debian:sid busybox ubuntu:14.04
+        will remove those images
+docker load -i my-images.tar.gz
+        will load those images from my-images.tar.gz
+
+
+
+
+
+
+
+
+// Orchestration: Building Systems with Docker //
+
+
+-Many orchestration systems exist for Docker
+-Start containers - and restart them if they fail
+-Service discovery - allow them to find each other (especially if a container had to restart, what’s its new PID or containerID? )
+-Resource allocation - match containers to computers (available resources CPU, RAM…)
+
+
+Docker Compose
+-SIngle machine coordination
+-Designed for testing and development
+-Brings up all your containers, volumes, networks, etc., with one command
+
+
+Kubernetes
+-Containers run programs
+-Pods group containers together (generally running on the same hardware)
+-Services make pods available to others.
+-Labels are used for very advanced service discovery 
+-Makes scripting large operations possible with the kubect1 cmd
+-Very flexible overlay networking
+-Runs equally well on your hardware or a cloud provider
+-Built-in service discovery
+-Get started at http://kubernetes.io/
+
+
+EC2 Container Service (ECS)
+-Task definitions
+        Define a set of containers that always run together (generally on the same hardware but 
+a bit different than pods)
+-Tasks
+        Actually makes a container run right now
+-Services and exposes it to the Net
+        Ensure that a task is running all the time 
+-Connects load balancers (ELBs) to services
+-Can create your own host instances in AWS
+-Make your instances start the agent and join the cluster
+-Pass the docker control socket into the agent
+-Provides docker repos - and it’s easy to run your own repo
+-Note that containers (tasks) can be part of CloudFormation stacks!
+-Get started at https://aws.amazon.com/ecs/
+
+
+AWS Fargate
+- https://aws.amazon.com/fargate
+- more automated version of ECS
+
+
+Docker Swarm
+- https://docs.docker.com/engine/swarm
+
+
+Google Cloud
+- https://cloud.google.com/kubernetes-engine
+
+
+Microsoft
+- https://azure.microsoft.com/en-us/services/kubernetes-service
+
+
+Next Steps to learn Docker:
+* Goal: get one service to run in docker
+* Learn more about Dockerfiles
+* Run a production service on your laptop 
+* Make a personal development image (development env with everything I need to work)
