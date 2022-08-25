@@ -100,4 +100,10 @@ CMD ["sh", "-c", "chown app:app /data /dev/stdout && exec gosu app supervisord"]
 #	docker run -p 5900:5900 -e VNC_SERVER_PASSWORD=password --user shaun --privileged ubuntu/shaun:1
 
 ## To run the image with enough RAM allocation and Memory access
-#	docker run -p 5900:5900 -v ~/Programs/Docker/dFiles/dIDE/volume:/shared-folder-Shaun --shm-size=2g -e VNC_SERVER_PASSWORD=password --user shaun --privileged ubuntu/shaun:1	
+#	docker run -p 5900:5900 -v ~/Programs/Docker/dFiles/dIDE/volume:/shared-folder-Shaun --shm-size=2g -e VNC_SERVER_PASSWORD=password --user shaun --privileged ubuntu/shaun:1
+
+## to lunch the image to work with noVNC
+# docker run --detach -v shaun-data:/data -v /run/user/1000/pipewire-0:/run/user/1000/pipewire-0 -v /run/dbus:/run/dbus  --shm-size=2g --net=shaun-net --name=shaun-app --privileged web/shaun:5
+
+## to lunch Caddy so we can connect via a browser to the container
+# docker run --detach --volume=shaun-data:/data --net=shaun-net --name=shaun-web --env=APP_USERNAME="shaun" --env=APP_PASSWORD_HASH="JDJhJDEwJFR2OTJ5bEJlYmtHR0NHUFQ3RGUwMk9UR3VBcTY3ZFRFYXVKNGYyWm9UQXpDOEFHS2UxQWdl" --publish=8080:8080 caddy/shaun:1
