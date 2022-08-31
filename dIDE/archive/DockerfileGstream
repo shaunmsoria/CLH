@@ -67,20 +67,6 @@ RUN apt update \
 # Set the variable PIPE_RUNTIME_DIR for user shaun
 ENV PIPEWIRE_RUNTIME_DIR=/run/user/1000/
 
-# Install python3-gst-1.0
-RUN sudo apt update \
-&& apt install -y python3-gst-1.0
-
-# Intall gstreamer1.0-x package
-RUN sudo apt-get update \
-&& sudo apt-get install -y gstreamer1.0-x gstreamer1.0-tools \
-&& sudo apt-get install -y gstreamer1.0-pipewire
-
-# Install alsa-tools
-RUN sudo apt update \
-&& sudo apt install -y gstreamer1.0-alsa \
-&& sudo apt install -y alsa-base alsa-tools
-
 # Install Flatpak & Helvum [Not Working]
 # RUN sudo apt install -y flatpak \
 #	&& flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo \
@@ -88,6 +74,19 @@ RUN sudo apt update \
 #	&& flatpak-builder --install flatpak-build/ build-aux/org.pipewire.Helvum.json \
 #	&& flatpak run org.pipewire.Helvum
 
+
+
+# Installing pipewire v1 
+# RUN add-apt-repository ppa:pipewire-debian/pipewire-upstream
+# RUN apt update \
+#	&& apt install pipewire pipewire-audio-client-libraries
+# RUN apt install gstreamer1.0-pipewire libpipewire-0.3-{0,dev,modules} libspa-0.2-{bluetooth,dev,jack,modules} pipewire{,-{audio-client-libraries,pulse,media-session,bin,locales,tests}} 
+	
+
+# Installing pulseaudio
+# RUN apt update -y \
+# 	&& apt install -y pulseaudio \
+#	&& apt install -y pulseaudio-utils
 
 # Copying the bootstrap.sh scrip into the container
 #COPY bootstrap.sh /
