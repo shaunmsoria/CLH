@@ -58,14 +58,14 @@ COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/
 EXPOSE 8080
 
-# Installing pipewire
-RUN apt update \
-	&& apt install -y pipewire \
-	&& apt install -y wireplumber 
-# RUN apt install -y pipewire-pulse qjackctl
-
 # Set the variable PIPE_RUNTIME_DIR for user shaun
 ENV PIPEWIRE_RUNTIME_DIR=/run/user/1000/
+ENV XDG_RUNTIME_DIR='/run/user/1000'
+# ENV XDG_RUNTIME_DIR='/root'
+
+# Installing pipewire
+RUN apt update \
+	&& apt install -y pipewire wireplumber 
 
 # Install python3-gst-1.0
 RUN sudo apt update \
@@ -79,15 +79,17 @@ RUN sudo apt-get update \
 # Install alsa-tools
 RUN sudo apt update \
 && sudo apt install -y gstreamer1.0-alsa \
-&& sudo apt install -y alsa-base alsa-tools
+&& sudo apt install -y alsa-base alsa-source alsa-tools alsa-utils alsa-oss
 
-# Install Flatpak & Helvum [Not Working]
-# RUN sudo apt install -y flatpak \
-#	&& flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo \
-#	&& flatpak install org.gnome.{Platform,Sdk}//41 org.freedesktop.Sdk.Extension.rust-stable//21.08 org.freedesktop.Sdk.Extension.llvm12//21.08 \
-#	&& flatpak-builder --install flatpak-build/ build-aux/org.pipewire.Helvum.json \
-#	&& flatpak run org.pipewire.Helvum
+# Install inxi package to see container access to the host hardware
+RUN sudo apt update \
+	&& sudo apt install -y inxi
 
+# Install Dbus
+RUN apt-get update \
+	&& apt-get upgrade -y \
+	&& apt-get install -y dbus
+COPY org.manjaro.pamac.daemon.conf /etc/dbus-1/session.d/
 
 # Copying the bootstrap.sh scrip into the container
 #COPY bootstrap.sh /
@@ -97,6 +99,9 @@ RUN sudo apt update \
 
 # Executing script
 #CMD '/bootstrap.sh'
+
+# Adding user shaun to the audio group
+RUN sudo usermod -a -G audio shaun
 
 # Creating the volume data and exec gosu supervisord
 RUN groupadd -f --gid 1000 app \
