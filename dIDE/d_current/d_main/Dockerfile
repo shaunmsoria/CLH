@@ -60,7 +60,7 @@ EXPOSE 8080
 
 # Set the variable PIPE_RUNTIME_DIR for user shaun
 ENV PIPEWIRE_RUNTIME_DIR=/run/user/1000/
-ENV XDG_RUNTIME_DIR='/run/user/1000'
+ENV XDG_RUNTIME_DIR='/home/shaun/'
 # ENV XDG_RUNTIME_DIR='/root'
 
 # Installing pipewire
