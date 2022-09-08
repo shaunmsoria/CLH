@@ -59,7 +59,7 @@ COPY supervisord.conf /etc/
 EXPOSE 8080
 
 # Set the variable PIPE_RUNTIME_DIR for user shaun
-ENV PIPEWIRE_RUNTIME_DIR=/run/user/1000/
+ENV PIPEWIRE_RUNTIME_DIR='/run/user/1000/'
 ENV XDG_RUNTIME_DIR='/home/shaun/'
 # ENV XDG_RUNTIME_DIR='/root'
 
@@ -69,17 +69,17 @@ RUN apt update \
 
 # Install python3-gst-1.0
 RUN sudo apt update \
-&& apt install -y python3-gst-1.0
+	&& apt install -y python3-gst-1.0
 
 # Intall gstreamer1.0-x package
 RUN sudo apt-get update \
-&& sudo apt-get install -y gstreamer1.0-x gstreamer1.0-tools \
-&& sudo apt-get install -y gstreamer1.0-pipewire
-
+	&& sudo apt-get install -y gstreamer1.0-x gstreamer1.0-tools \
+	&& sudo apt-get install -y gstreamer1.0-pipewire
+	
 # Install alsa-tools
 RUN sudo apt update \
-&& sudo apt install -y gstreamer1.0-alsa \
-&& sudo apt install -y alsa-base alsa-source alsa-tools alsa-utils alsa-oss
+	&& sudo apt install -y gstreamer1.0-alsa \
+	&& sudo apt install -y alsa-base alsa-source alsa-tools alsa-utils alsa-oss
 
 # Install inxi package to see container access to the host hardware
 RUN sudo apt update \
@@ -102,6 +102,27 @@ COPY org.manjaro.pamac.daemon.conf /etc/dbus-1/session.d/
 
 # Adding user shaun to the audio group
 RUN sudo usermod -a -G audio shaun
+
+# Adding test audio file
+COPY Ed_Sheeran_Shivers.mp3 .
+
+# Install gstreamer1.0-x package part 2
+RUN sudo apt-get update \
+	&& sudo apt-get install -y libgstreamer1.0-dev \
+	&& sudo apt-get install -y libgstreamer-plugins-base1.0-dev \
+	&& sudo apt-get install -y libgstreamer-plugins-bad1.0-dev \
+	&& sudo apt-get install -y gstreamer1.0-plugins-base \
+	&& sudo apt-get install -y gstreamer1.0-plugins-good \
+	&& sudo apt-get install -y gstreamer1.0-plugins-bad \
+	&& sudo apt-get install -y gstreamer1.0-plugins-ugly \
+	&& sudo apt-get install -y gstreamer1.0-libav \
+	&& sudo apt-get install -y gstreamer1.0-gl \
+ 	&& sudo apt-get install -y gstreamer1.0-gtk3 \
+	&& sudo apt-get install -y gstreamer1.0-doc 
+#	&& sudo apt-get install -y gstreamer1.0-qt5i
+#	&& sudo apt-get install -y gstreamer1.0-pulseaudio ## pulseaudio not installed
+
+
 
 # Creating the volume data and exec gosu supervisord
 RUN groupadd -f --gid 1000 app \

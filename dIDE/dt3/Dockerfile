@@ -31,3 +31,10 @@ RUN sudo apt update \
 	&& sudo apt install -y gstreamer1.0-alsa \
 	&& sudo apt install -y alsa-base alsa-tools
 
+# Install VLC for audio testing
+RUN sudo apt update \
+	&& sudo apt upgrade -y \
+	&& sudo apt install -y vlc
+
+# Copy test audio file
+COPY Ed_Sheeran_Shivers.mp3 /home/
