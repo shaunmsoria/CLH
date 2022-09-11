@@ -91,6 +91,8 @@ RUN apt-get update \
 	&& apt-get install -y dbus
 COPY org.manjaro.pamac.daemon.conf /etc/dbus-1/session.d/
 
+
+
 # Copying the bootstrap.sh scrip into the container
 #COPY bootstrap.sh /
 
@@ -104,7 +106,7 @@ COPY org.manjaro.pamac.daemon.conf /etc/dbus-1/session.d/
 RUN sudo usermod -a -G audio shaun
 
 # Adding test audio file
-COPY Ed_Sheeran_Shivers.mp3 .
+COPY Ed_Sheeran_Shivers.mp3 ./home/shaun/
 
 # Install gstreamer1.0-x package part 2
 RUN sudo apt-get update \
@@ -117,12 +119,19 @@ RUN sudo apt-get update \
 	&& sudo apt-get install -y gstreamer1.0-plugins-ugly \
 	&& sudo apt-get install -y gstreamer1.0-libav \
 	&& sudo apt-get install -y gstreamer1.0-gl \
- 	&& sudo apt-get install -y gstreamer1.0-gtk3 \
-	&& sudo apt-get install -y gstreamer1.0-doc 
-#	&& sudo apt-get install -y gstreamer1.0-qt5i
-#	&& sudo apt-get install -y gstreamer1.0-pulseaudio ## pulseaudio not installed
+ 	&& sudo apt-get install -y gstreamer1.0-gtk3
+#	&& sudo apt-get install -y gstreamer1.0-doc		## install doesn't work 
+#	&& sudo apt-get install -y gstreamer1.0-qt5i		## install doesn't work
+#	&& sudo apt-get install -y gstreamer1.0-pulseaudio 	## pulseaudio not installed
 
+# Install youtube-dl to work with Gstreamer-1.0
+RUN sudo apt-get update \
+	&& sudo apt install -y youtube-dl
 
+# Install ffmpeg for the mp4 format
+RUN sudo add-apt-repository universe \
+	&& sudo apt update \
+	&& sudo apt install ffmpeg
 
 # Creating the volume data and exec gosu supervisord
 RUN groupadd -f --gid 1000 app \
