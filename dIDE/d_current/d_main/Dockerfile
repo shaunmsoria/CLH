@@ -56,7 +56,7 @@ RUN apt update && apt upgrade -y \
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/
-EXPOSE 8081
+EXPOSE 8080
 
 # Set the variable PIPE_RUNTIME_DIR for user shaun
 ENV PIPEWIRE_RUNTIME_DIR='/run/user/1000/'
