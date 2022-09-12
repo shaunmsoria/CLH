@@ -56,7 +56,7 @@ RUN apt update && apt upgrade -y \
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/
-EXPOSE 8080
+EXPOSE 8081
 
 # Set the variable PIPE_RUNTIME_DIR for user shaun
 ENV PIPEWIRE_RUNTIME_DIR='/run/user/1000/'
@@ -65,7 +65,7 @@ ENV XDG_RUNTIME_DIR='/home/shaun/'
 
 # Installing pipewire
 RUN apt update \
-	&& apt install -y pipewire wireplumber 
+	&& apt install -y pipewire wireplumber pipewire-pulse 
 
 # Install python3-gst-1.0
 RUN sudo apt update \
@@ -124,14 +124,18 @@ RUN sudo apt-get update \
 #	&& sudo apt-get install -y gstreamer1.0-qt5i		## install doesn't work
 #	&& sudo apt-get install -y gstreamer1.0-pulseaudio 	## pulseaudio not installed
 
-# Install youtube-dl to work with Gstreamer-1.0
-RUN sudo apt-get update \
-	&& sudo apt install -y youtube-dl
 
 # Install ffmpeg for the mp4 format
 RUN sudo add-apt-repository universe \
 	&& sudo apt update \
-	&& sudo apt install ffmpeg
+	&& sudo apt install -y ffmpeg
+
+# Install youtube-dl to work with Gstreamer-1.0
+RUN sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/local/bin/youtube-dl \
+	&& sudo chmod a+rx /usr/local/bin/youtube-dl
+#	RUN sudo apt-get update \
+#	&& sudo apt install -y youtube-dl
+
 
 # Creating the volume data and exec gosu supervisord
 RUN groupadd -f --gid 1000 app \
