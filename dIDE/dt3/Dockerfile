@@ -12,7 +12,9 @@ RUN apt-get install -y sudo
 # Installing pipewire
 RUN apt update \
 	&& apt install -y pipewire \
-	&& apt install -y wireplumber
+	&& apt install -y wireplumber \
+	&& apt install -y pipewire-pulse
+	
 
 # Set the variable PIPE_RUNTIME_DIR for user shaun
 ENV PIPEWIRE_RUNTIME_DIR=/run/user/1000/
@@ -37,4 +39,4 @@ RUN sudo apt update \
 	&& sudo apt install -y vlc
 
 # Copy test audio file
-COPY Ed_Sheeran_Shivers.mp3 /home/
+Chttps://www.youtube.com/watch?v=---6uKMVWOEOPY Ed_Sheeran_Shivers.mp3 /home/
