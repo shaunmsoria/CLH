@@ -12,7 +12,7 @@ RUN apt-get install -y sudo
 # Set the variables for user shaun
 ENV PIPEWIRE_RUNTIME_DIR=/run/user/1000/
 ENV DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
-ENV XDG_RUNTIME_DIR=/run/user/1000i
+ENV XDG_RUNTIME_DIR=/run/user/1000/
 ENV PULSE_SERVER=tcp:127.0.0.1:4713
 
 # Install pipewire
@@ -36,4 +36,11 @@ RUN sudo apt update \
 	&& sudo apt install -y vlc
 
 # Copy test audio file
-COPY Ed_Sheeran_Shivers.mp3 /home/
+COPY Ed_Sheeran_Shivers.mp3 /home/shaun/
+
+# Install git & github-cli & nvim
+RUN apt update -y \
+	&& apt install -y git \
+	&& git config --global user.name "shaunmsoria" \
+	&& git config --global user.email "shaunmsoria@gmail.com" \
+	&& apt install -y gh neovim
