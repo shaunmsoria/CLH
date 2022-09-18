@@ -79,7 +79,7 @@ RUN sudo apt-get update \
 # Install alsa-tools
 RUN sudo apt update \
 	&& sudo apt install -y gstreamer1.0-alsa \
-	&& sudo apt install -y alsa-base alsa-source alsa-tools alsa-utils alsa-oss
+	&& sudo apt install -y alsa-base alsa-source alsa-tools alsa-utils alsa-oss libsndfile1-dev
 
 # Install inxi package to see container access to the host hardware
 RUN sudo apt update \
