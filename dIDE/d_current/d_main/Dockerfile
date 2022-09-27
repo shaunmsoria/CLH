@@ -46,7 +46,7 @@ RUN apt update -y \
 	&& mkdir /home/shaun/.config/awesome/ \
 	&& cp /usr/share/awesome/themes/default/theme.lua /home/shaun/.config/awesome/ \
 	&& sudo cat /home/shaun/rc.lua > /etc/xdg/awesome/rc.lua \
-	&& sudo rm -f /home/shaun/rc.lua # test
+	&& sudo rm -f /home/shaun/rc.lua
 
 # Insalling google chrome stable
 RUN apt update && apt upgrade -y \
@@ -56,6 +56,22 @@ RUN apt update && apt upgrade -y \
 	&& apt update \
 	&& apt install google-chrome-stable -y \
 	&& chown -R shaun:shaun /home/shaun
+
+## Setting background
+#ADD settings.sh /home
+#RUN sudo chmod +x /home/shaun/settings.sh \
+#	&& /home/shaun/settings.sh \
+#	&& rm -f /home/shaun/settings.sh
+
+#RUN mkdir -p /home/shaun/downloads/wallpapers
+#ADD a0BLEP.webp /home/shaun/downloads/wallpapers
+#RUN cd /home/shaun/downloads/wallpapers/ \
+#	&& sudo feh --bg-fill a0BLEP.webp
+
+## Setting Kitty.conf ## TEST
+#RUN cd ~/.config/kitty \
+#      	&& ln -s ./kitty-themes/themes/Tomorrow_Night_Blue.conf ~/.config/kitty/theme.conf \
+#	&& echo "include ./theme.conf" | cat ./theme.conf
 
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
