@@ -63,12 +63,17 @@ RUN apt update && apt upgrade -y \
 #	&& /home/shaun/settings.sh \
 #	&& rm -f /home/shaun/settings.sh
 
-#RUN mkdir -p /home/shaun/downloads/wallpapers
-#ADD a0BLEP.webp /home/shaun/downloads/wallpapers
-#RUN cd /home/shaun/downloads/wallpapers/ \
-#	&& sudo feh --bg-fill a0BLEP.webp
+RUN mkdir -p /usr/share/awesome/themes/custom \
+	&& sudo rm -f /home/shaun/.config/awesome/theme.lua
+ADD kali.png /usr/share/awesome/themes/custom
+## would converting a0BLEP.webp to a0BLEP.png work?
+ADD theme.lua /home/shaun/.config/awesome/
+
 
 ## Setting Kitty.conf ## TEST
+RUN ln -s /home/shaun/.config/kitty/kitty-themes/themes/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty/theme.conf \
+	&& echo "include ./theme.conf" | cat ./theme.conf
+
 #RUN cd ~/.config/kitty \
 #      	&& ln -s ./kitty-themes/themes/Tomorrow_Night_Blue.conf ~/.config/kitty/theme.conf \
 #	&& echo "include ./theme.conf" | cat ./theme.conf
