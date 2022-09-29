@@ -31,12 +31,6 @@ RUN apt-get update -y \
 	&& apt-get install -y --no-install-recommends nano openssh-client rsync ca-certificates xdg-utils htop xzip bzip2 zip unzip \
 	&& rm -rf /var/lib/apt/lists
 
-# Installing git & github cli & kitty & neovim
-RUN apt update -y \
-	&& apt install -y git \
-	&& git config --global user.name "shaunmsoria" \
-	&& git config --global user.email "shaunmsoria@gmail.com" \
-	&& apt install -y gh kitty neovim
 
 # Installing awesome [window manager] & setup with rc.lua
 ADD rc.lua /home/shaun/
@@ -57,6 +51,16 @@ RUN apt update && apt upgrade -y \
 	&& apt install google-chrome-stable -y \
 	&& chown -R shaun:shaun /home/shaun
 
+## Changing shaun Home Directory
+RUN sudo usermod -d /home/shaun shaun
+
+# Installing git & github cli & kitty & neovim
+RUN apt update -y \
+	&& apt install -y git \
+	&& git config --global user.name "shaunmsoria" \
+	&& git config --global user.email "shaunmsoria@gmail.com" \
+	&& apt install -y gh kitty neovim
+
 ## Setting background
 #ADD settings.sh /home
 #RUN sudo chmod +x /home/shaun/settings.sh \
@@ -71,12 +75,18 @@ ADD theme.lua /home/shaun/.config/awesome/
 
 
 ## Setting Kitty.conf ## TEST
-RUN ln -s /home/shaun/.config/kitty/kitty-themes/themes/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty/theme.conf \
-	&& echo "include ./theme.conf" | cat ./theme.conf
+#RUN mkdir -p /data/.config/kitty/archive \
+#	&& sudo mv /data/.config/kitty/theme.conf /data/.config/kitty/archive
 
-#RUN cd ~/.config/kitty \
-#      	&& ln -s ./kitty-themes/themes/Tomorrow_Night_Blue.conf ~/.config/kitty/theme.conf \
+
+
+#RUN ln -s /data/.config/kitty/kitty-themes/themes/Tomorrow_Night_Blue.conf /data/.config/kitty/theme.conf \
 #	&& echo "include ./theme.conf" | cat ./theme.conf
+
+RUN sudo chmod o+x /home/shaun/.config/kitty \
+	&& cd /home/shaun/.config/kitty \
+      	&& ln -s /home/shaun/.config/kitty-themes/themes/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty/theme.conf \
+	&& echo "include ./theme.conf" | cat ./theme.conf
 
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
