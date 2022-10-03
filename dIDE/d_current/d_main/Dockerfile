@@ -54,12 +54,12 @@ RUN apt update && apt upgrade -y \
 ## Changing shaun Home Directory
 RUN sudo usermod -d /home/shaun shaun
 
-# Installing git & github cli & kitty & neovim
+# Installing git & github cli & neovim
 RUN apt update -y \
 	&& apt install -y git \
 	&& git config --global user.name "shaunmsoria" \
 	&& git config --global user.email "shaunmsoria@gmail.com" \
-	&& apt install -y gh kitty neovim
+	&& apt install -y gh neovim
 
 ## Setting background
 #ADD settings.sh /home
@@ -74,19 +74,40 @@ ADD kali.png /usr/share/awesome/themes/custom
 ADD theme.lua /home/shaun/.config/awesome/
 
 
-## Setting Kitty.conf ## TEST
-#RUN mkdir -p /data/.config/kitty/archive \
-#	&& sudo mv /data/.config/kitty/theme.conf /data/.config/kitty/archive
+# Installing Kitty & Setting
+RUN sudo apt update \
+	&& sudo apt -y install kitty
 
 
+
+#ENV PATH=$PATH:/home/shaun
+#RUN curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+#RUN cd /home/shaun/.local/
+#RUN ln -s /home/shaun/.local/kitty.app/bin/kitty /home/shaun/.local/bin/
+#RUN cp /home/shaun/.local/kitty.app/share/applications/kitty.desktop /home/shaun/.local/share/applications
+#RUN sed -i "s|Icon=kitty|Icon=/home/$USER/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" /home/shaun/.local/share/applications/kitty.desktop
+#RUN sudo apt install gcc cmake pkg-config libdbus-1-dev libxcursor-dev libxrandr-dev libxi-dev libxinerama-dev libgl1-mesa-dev libxkbcommon-x11-dev libfontconfig-dev libx11-xcb-dev liblcms2-dev libpython3-dev
+#RUN git clone https://github.com/kovidgoyal/kitty && cd kitty \
+#	&& make
+
+# Setting Kitty.conf ## TEST
+RUN mkdir -p home/shaun/.config/kitty/kitty-themes
+RUN sudo git clone --depth 1 https://github.com/dexpota/kitty-themes.git /home/shaun/.config/kitty/kitty-themes
+RUN cd /home/shaun/.config/kitty
+RUN sudo cp /home/shaun/.config/kitty/kitty-themes/themes/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty \
+	&& sudo mv /home/shaun/.config/kitty/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty/theme.conf
+RUN sudo echo "include /home/shaun/.config/kitty/theme.conf" >> /etc/xdg/kitty/kitty.conf
+
+
+#RUN ln -s /home/shaun/kitty-themes/themes/Floraverse.conf /home/shaun/.config/kitty/theme.conf
 
 #RUN ln -s /data/.config/kitty/kitty-themes/themes/Tomorrow_Night_Blue.conf /data/.config/kitty/theme.conf \
 #	&& echo "include ./theme.conf" | cat ./theme.conf
 
-RUN sudo chmod o+x /home/shaun/.config/kitty \
-	&& cd /home/shaun/.config/kitty \
-      	&& ln -s /home/shaun/.config/kitty-themes/themes/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty/theme.conf \
-	&& echo "include ./theme.conf" | cat ./theme.conf
+#RUN sudo chmod o+x /home/shaun/.config/kitty \
+#	&& cd /home/shaun/.config/kitty \
+#      	&& ln -s /home/shaun/.config/kitty-themes/themes/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty/theme.conf \
+#	&& echo "include ./theme.conf" | cat ./theme.conf
 
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
