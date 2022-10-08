@@ -84,6 +84,14 @@ COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/
 EXPOSE 8080
 
+# Customisation // Virtualbox & Vagrant
+RUN sudo apt update \
+	&& sudo apt install -y vagrant virtualbox \
+	&& mkdir /home/shaun/Programs \
+	&& cd /home/shaun/Programs/ \
+	&& git clone https://github.com/theurbanpenguin/comptia-automation \
+	&& cd comptia-automation/vagrant
+
 CMD ["sh", "-c", "chown shaun:shaun /data /dev/stdout && exec gosu shaun supervisord"]
 
 ### CLI CMD 
