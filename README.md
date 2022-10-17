@@ -15,9 +15,9 @@ Here are my study notes for the CLH Project
  <br>1) Ensure to have GitHub installed
  <br>2) Ensure to have Docker installed
  <br>3) Clone this repo on your machine
- <br>4) Then cd to CLH/dIDE/dFiles/caddy/
+ <br>4) Then cd in the repo to CLH/dIDE/dFiles/caddy/
  <br>5) Then execute the follow command in your terminal: docker build -t caddyname:1 .
- <br>6) Then cd to CLH/dIDE/dFiles/dBase/
+ <br>6) Then cd in the repo to CLH/dIDE/dFiles/dBase/
  <br>7) Then execute the follow command in your terminal: docker build -t basename:1 .
  <br>8) Then execute: docker network create networkname
  <br>9) Then execute: docker volume create volumename
