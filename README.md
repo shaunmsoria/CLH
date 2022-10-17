@@ -5,6 +5,7 @@ Here are my study notes for the CLH Project
 1) What is CLH?
  <br>CLH is a Docker Container running on Ubuntu 22.04 with GUI, Google Chrome, Neovim, GitHub, Kitty installed.
  <br>The container is running on a Linode server accessible via noVNC via an encrypted password.
+ <br>Image and futher details are available at: https://shaunmsoria.github.io/resume/ in the Portfolio Section.
 
 2) What is the rational?
  <br>The purpose of CLH is to allow the user to access a highly customisable homelab from any device, anywhere in the world and at any time to work on development project.
