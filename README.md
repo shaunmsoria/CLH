@@ -11,14 +11,27 @@ Here are my study notes for the CLH Project
  <br>The purpose of CLH is to allow the user to access a highly customisable homelab from any device, anywhere in the world and at any time to work on development project.
  <br>The access to the container is secured with an encrypted password and the container is easily redeployable if something goes wrong without compromising the linode server.
  
+ 3) How to install CLH on your machine?
+ <br>1) Ensure to have GitHub installed
+ <br>2) Ensure to have Docker installed
+ <br>3) Clone this repo on your machine
+ <br>4) Then cd to CLH/dIDE/dFiles/caddy/
+ <br>5) Then execute the follow command in your terminal: docker build -t caddyname:1 .
+ <br>6) Then cd to CLH/dIDE/dFiles/dBase/
+ <br>7) Then execute the follow command in your terminal: docker build -t basename:1 .
+ <br>8) Then execute: docker network create networkname
+ <br>9) Then execute: docker volume create volumename
+ <br>10) then execute: docker run --detach --volume=volumename:/data --net=networkname --name=streamname --env=APP_USERNAME="username" --env=APP_PASSWORD_HASH="JDJhJDEwJFR2OTJ5bEJlYmtHR0NHUFQ3RGUwMk9UR3VBcTY3ZFRFYXVKNGYyWm9UQXpDOEFHS2UxQWdl" --restart unless-stopped --publish=8080:8080 caddyname:1
+ <br>11) Then execute: docker run --detach --rm -v volumename:/data -v /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume  --shm-size=1g --net=networkname --name=containername --privileged basename:1
 
-3) What problems needed to be overcome to create CLH?
+
+4) What problems needed to be overcome to create CLH?
  <br>The first challenge was to install all the necessary dependencies in the dockerfile while having the container running efficiently and with the expected behavior.
  <br>The second challenge was to set a GUI accessible via a browser. Proper network configuration was required to allow the container to stream its GUI via the browser.
  <br>The third challenge was to keep the container to a reasonable size ~ 1Gb to be easily redeployable if necessary.
  
  
-4) What is next for the CLH Project?
+5) What is next for the CLH Project?
    - Streaming sound with video to the browser
    - Allow multiple streaming browser to the same container to reproduce the multiple displays effect
    - Chain containers together for redundancy [if one container is overloaded, being able to pass the workload to another container]
