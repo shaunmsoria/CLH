@@ -12,18 +12,18 @@ Here are my study notes for the CLH Project
  <br>The access to the container is secured with an encrypted password and the container is easily redeployable if something goes wrong without compromising the linode server.
  
  3) How to install CLH on your machine?
- <br>1) Ensure to have GitHub installed
- <br>2) Ensure to have Docker installed
- <br>3) Clone this repo on your machine
- <br>4) Then cd in the repo to CLH/dIDE/dFiles/caddy/
- <br>5) Then execute the follow command in your terminal: docker build -t caddyname:1 .
- <br>6) Then cd in the repo to CLH/dIDE/dFiles/dBase/
- <br>7) Then execute the follow command in your terminal: docker build -t basename:1 .
- <br>8) Then execute: docker network create networkname
- <br>9) Then execute: docker volume create volumename
- <br>10) Then execute the following command to create a mypassword-hash we will need to run the caddy container. Here 'mypass' would be a password of your choosing: docker run --rm -it caddyname:1 caddy hash-password -plaintext 'mypass'
- <br>11) Then execute: docker run --detach --volume=volumename:/data --net=networkname --name=streamname --env=APP_USERNAME="myusername" --env=APP_PASSWORD_HASH="mypassword-hash" --restart unless-stopped --publish=8080:8080 caddyname:1
- <br>12) Then execute: docker run --detach --rm -v volumename:/data -v /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume  --shm-size=1g --net=networkname --name=containername --privileged basename:1
+    - Ensure to have GitHub installed
+    - Ensure to have Docker installed
+    - Clone this repo on your machine
+    - Then cd in the repo to CLH/dIDE/dFiles/caddy/
+    - Then execute the follow command in your terminal: docker build -t caddyname:1 .
+    - Then cd in the repo to CLH/dIDE/dFiles/dBase/
+    - Then execute the follow command in your terminal: docker build -t basename:1 .
+    - Then execute: docker network create networkname
+    - Then execute: docker volume create volumename
+    - Then execute the following command to create a mypassword-hash we will need to run the caddy container. Here 'mypass' would be a password of your choosing: docker run --rm -it caddyname:1 caddy hash-password -plaintext 'mypass'
+    - Then execute: docker run --detach --volume=volumename:/data --net=networkname --name=streamname --env=APP_USERNAME="myusername" --env=APP_PASSWORD_HASH="mypassword-hash" --restart unless-stopped --publish=8080:8080 caddyname:1
+    - Then execute: docker run --detach --rm -v volumename:/data -v /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume  --shm-size=1g --net=networkname --name=containername --privileged basename:1
 
 
 4) What problems needed to be overcome to create CLH?
