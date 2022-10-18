@@ -21,8 +21,9 @@ Here are my study notes for the CLH Project
  <br>7) Then execute the follow command in your terminal: docker build -t basename:1 .
  <br>8) Then execute: docker network create networkname
  <br>9) Then execute: docker volume create volumename
- <br>10) then execute: docker run --detach --volume=volumename:/data --net=networkname --name=streamname --env=APP_USERNAME="username" --env=APP_PASSWORD_HASH="JDJhJDEwJFR2OTJ5bEJlYmtHR0NHUFQ3RGUwMk9UR3VBcTY3ZFRFYXVKNGYyWm9UQXpDOEFHS2UxQWdl" --restart unless-stopped --publish=8080:8080 caddyname:1
- <br>11) Then execute: docker run --detach --rm -v volumename:/data -v /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume  --shm-size=1g --net=networkname --name=containername --privileged basename:1
+ <br>10) Then execute the following command to create a mypassword-hash we will need to run the caddy container. Here 'mypass' would be a password of your choosing: docker run --rm -it caddyname:1 caddy hash-password -plaintext 'mypass'
+ <br>11) Then execute: docker run --detach --volume=volumename:/data --net=networkname --name=streamname --env=APP_USERNAME="myusername" --env=APP_PASSWORD_HASH="mypassword-hash" --restart unless-stopped --publish=8080:8080 caddyname:1
+ <br>12) Then execute: docker run --detach --rm -v volumename:/data -v /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume  --shm-size=1g --net=networkname --name=containername --privileged basename:1
 
 
 4) What problems needed to be overcome to create CLH?
