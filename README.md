@@ -1,5 +1,7 @@
 # Containerised Linode Homelab v1.0
 
+![Containerised Linode Homelab v1.0](https://shaunmsoria.github.io/resume/img/CLHProject.png "Example of the GUI stream from the CLH container to noVNC")
+
 Here are my study notes for the CLH Project
 
 1) What is CLH?
