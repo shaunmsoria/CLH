@@ -27,9 +27,9 @@ Here are my study notes for the CLH Project
 
 
 4) What problems needed to be overcome to create CLH?
- <br>- The first challenge was to install all the necessary dependencies in the dockerfile while having the container running efficiently and with the expected behavior.
- <br>- The second challenge was to set a GUI accessible via a browser. Proper network configuration was required to allow the container to stream its GUI via the browser.
- <br>- The third challenge was to keep the container to a reasonable size ~ 1Gb to be easily redeployable if necessary.
+   - The first challenge was to install all the necessary dependencies in the dockerfile while having the container running efficiently and with the expected behavior.
+   - The second challenge was to set a GUI accessible via a browser. Proper network configuration was required to allow the container to stream its GUI via the browser.
+   - The third challenge was to keep the container to a reasonable size ~ 1Gb to be easily redeployable if necessary.
  
  
 5) What is next for the CLH Project?
