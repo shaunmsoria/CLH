@@ -80,6 +80,7 @@ RUN sudo cp /home/shaun/.config/kitty/kitty-themes/themes/Tomorrow_Night_Blue.co
 RUN sudo echo "include /home/shaun/.config/kitty/theme.conf" >> /etc/xdg/kitty/kitty.conf
 
 # Installating IntelliJ IDEA
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -y | sh 
 RUN sudo apt update \
 	&& sudo add-apt-repository ppa:mmk2410/intellij-idea -y \
 	&& sudo apt install intellij-idea-community -y
