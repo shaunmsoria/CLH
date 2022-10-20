@@ -19,7 +19,7 @@ VOLUME /data
 RUN apt-get install -y sudo x11vnc xvfb wget wmctrl
 
 # Install dependencies
-RUN apt install software-properties-common apt-transport-https -y
+RUN apt install vim software-properties-common apt-transport-https curl -y
 
 # install tigervnc-standalone-server supervisor gosu
 RUN apt-get update -y \
@@ -79,25 +79,22 @@ RUN sudo cp /home/shaun/.config/kitty/kitty-themes/themes/Tomorrow_Night_Blue.co
 	&& sudo mv /home/shaun/.config/kitty/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty/theme.conf
 RUN sudo echo "include /home/shaun/.config/kitty/theme.conf" >> /etc/xdg/kitty/kitty.conf
 
+# Installating IntelliJ IDEA
+RUN sudo apt update \
+	&& sudo add-apt-repository ppa:mmk2410/intellij-idea -y \
+	&& sudo apt install intellij-idea-community -y
+
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/
 EXPOSE 8080
-
-# Customisation // Virtualbox & Vagrant
-RUN sudo apt update \
-	&& sudo apt install -y vagrant virtualbox \
-	&& mkdir /home/shaun/Programs \
-	&& cd /home/shaun/Programs/ \
-	&& git clone https://github.com/theurbanpenguin/comptia-automation \
-	&& cd comptia-automation/vagrant
 
 CMD ["sh", "-c", "chown shaun:shaun /data /dev/stdout && exec gosu shaun supervisord"]
 
 ### CLI CMD 
 
 ## Lunch Caddy so we can connect via a browser to the container
-# docker run --detach --volume=shaun-data:/data --net=shaun-net --name=shaun-web --env=APP_USERNAME="shaun" --env=APP_PASSWORD_HASH="JDJhJDEwJFR2OTJ5bEJlYmtHR0NHUFQ3RGUwMk9UR3VBcTY3ZFRFYXVKNGYyWm9UQXpDOEFHS2UxQWdl" --publish=8080:8080 caddy/shaun:1
+# docker run --detach --volume=shaun-data:/data --net=shaun-net --name=shaun-web --env=APP_USERNAME="shaun" --env=APP_PASSWORD_HASH="JDJhJDEwJFR2OTJ5bEJlYmtHR0NHUFQ3RGUwMk9UR3VBcTY3ZFRFYXVKNGYyWm9UQXpDOEFHS2UxQWdl" --restart unless-stopped --publish=8080:8080 shaun/caddy:1
 
 ## Lunch the image to work with noVNC
-# docker run --detach --rm -v shaun-data:/data -v /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume  --shm-size=1g --net=shaun-net --name=shaun-app --privileged opt:2
+# docker run --detach --rm -v shaun-data:/data -v /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume  --shm-size=1.5g --net=shaun-net --name=shaun-app --privileged homelab:1

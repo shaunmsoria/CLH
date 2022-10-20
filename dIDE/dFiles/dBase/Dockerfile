@@ -92,4 +92,4 @@ CMD ["sh", "-c", "chown shaun:shaun /data /dev/stdout && exec gosu shaun supervi
 # docker run --detach --volume=shaun-data:/data --net=shaun-net --name=shaun-web --env=APP_USERNAME="shaun" --env=APP_PASSWORD_HASH="JDJhJDEwJFR2OTJ5bEJlYmtHR0NHUFQ3RGUwMk9UR3VBcTY3ZFRFYXVKNGYyWm9UQXpDOEFHS2UxQWdl" --restart unless-stopped --publish=8080:8080 shaun/caddy:1
 
 ## Lunch the image to work with noVNC
-# docker run --detach --rm -v shaun-data:/data -v /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume  --shm-size=1g --net=shaun-net --name=shaun-app --privileged opt:2
+# docker run --detach --rm -v shaun-data:/data -v /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume  --shm-size=1.5g --net=shaun-net --name=shaun-app --privileged homelab:1
