@@ -22,7 +22,6 @@ Plug 'https://github.com/preservim/tagbar'				" Tagbar for code navigation
 
 call plug#end()
 
-nmap <F8> : TagbarToggle<CR>
 
 :set completeopt-=preview								" For no Previews
 
@@ -30,7 +29,10 @@ nmap <F8> : TagbarToggle<CR>
 
 nnoremap <C-f> :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
-nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-Left> :NERDTreeToggle<CR>
+nnoremap <C-Down> :TerminalSplit bash<CR>
+
+nmap <C-Right> : TagbarToggle<CR>
 
 let g:NERDTreeDirArrowExpandable="+"
 let g:NERDTreeDirArrowCollapsible="~"
