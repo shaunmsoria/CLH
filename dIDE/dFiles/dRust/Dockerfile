@@ -99,6 +99,11 @@ ADD init.vim /home/shaun/.config/nvim
 RUN sudo apt update \
 	&& sudo apt install exuberant-ctags
 
+# Install jq for json manipulation in the shell
+RUN sudo apt update \
+	&& sudo apt upgrade \
+	&& sudo apt install -y jq
+
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/
