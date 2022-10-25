@@ -14,3 +14,6 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
 source "$HOME/.cargo/env" # Not working from script, need to be executed from terminal
+
+# Install cargo-expand
+cargo install cargo-expand ## TO BE TESTED
