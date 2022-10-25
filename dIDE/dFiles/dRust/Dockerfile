@@ -101,7 +101,7 @@ RUN sudo apt update \
 
 # Install jq for json manipulation in the shell
 RUN sudo apt update \
-	&& sudo apt upgrade \
+	&& sudo apt upgrade -y \
 	&& sudo apt install -y jq
 
 # Copying necessary files
