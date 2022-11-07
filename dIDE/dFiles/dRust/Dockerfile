@@ -104,6 +104,10 @@ RUN sudo apt update \
 	&& sudo apt upgrade -y \
 	&& sudo apt install -y jq
 
+# Install Node.js & npm
+RUN sudo apt update \
+	&& sudo apt install -y nodejs npm
+
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/

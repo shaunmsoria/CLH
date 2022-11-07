@@ -13,7 +13,8 @@ sudo apt install -y build-essential
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
-source "$HOME/.cargo/env" # Not working from script, need to be executed from terminal
+# add cargo directory to bash.bashrc
+sudo printf "\n#add directory cargo to bash\nsource \"$HOME/.cargo/env\"" >> /etc/bash.bashrc
 
 # Install cargo-expand
-cargo install cargo-expand ## TO BE TESTED
+cargo install cargo-expand 
