@@ -105,13 +105,11 @@ RUN sudo apt update \
 	&& sudo apt install -y jq
 
 # Install Node.js & npm
-RUN sudo apt update \
-	&& sudo apt install -y nodejs npm
+RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - \
+	&& sudo apt-get install nodejs
 
-# Install Ganache & Truffle & HardHat
-RUN npm i ganache \
-	&& npm -g truffle \
-	&& npm i hardhat
+## RUN sudo apt update \
+##	&& sudo apt install -y nodejs npm
 
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/

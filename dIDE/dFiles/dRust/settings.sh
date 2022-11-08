@@ -19,5 +19,8 @@ sudo printf "\n#add directory cargo to bash\nsource \"$HOME/.cargo/env\"" >> /et
 # Install cargo-expand
 cargo install cargo-expand 
 
-# Install cargo-expand
-cargo install cargo-expand ## TO BE TESTED
+# Install Ganache & Truffle  & Hardhat & n
+sudo npm install -g n
+sudo npm i ganache
+sudo npm -g truffle
+sudo npm i hardhat
