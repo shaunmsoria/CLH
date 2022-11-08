@@ -108,6 +108,11 @@ RUN sudo apt update \
 RUN sudo apt update \
 	&& sudo apt install -y nodejs npm
 
+# Install Ganache & Truffle & HardHat
+RUN npm i ganache \
+	&& npm -g truffle \
+	&& npm i hardhat
+
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/
