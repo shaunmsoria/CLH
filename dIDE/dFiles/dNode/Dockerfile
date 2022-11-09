@@ -81,7 +81,7 @@ RUN sudo echo "include /home/shaun/.config/kitty/theme.conf" >> /etc/xdg/kitty/k
 
 # Installing Curl
 RUN apt update \
-	&& sudo apt install curl
+	&& sudo apt install -y curl
 
 # Install Tree
 RUN sudo apt update \
@@ -104,6 +104,29 @@ RUN sudo apt update \
 	&& sudo apt upgrade -y \
 	&& sudo apt install -y jq
 
+# Install Node.js & npm
+RUN curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash - \
+	&& sudo apt install -y nodejs \
+	&& sudo apt install -y build-essential
+
+# Install Ganache
+RUN npm install -y ganache-cli --global
+
+# Add UI version of Ganache
+RUN mkdir /home/shaun/apps
+ADD ganache-2.5.4-linux-x86_64.AppImage /home/shaun/apps
+RUN sudo chmod +x /home/shaun/apps/ganache-2.5.4-linux-x86_64.AppImage
+
+# Install FUSE necessary to execute Ganache UI
+RUN sudo apt-get install fuse libfuse2 \
+	&& sudo addgroup fuse \
+	&& sudo adduser $USER shaun fuse
+
+# Install Truffle
+RUN npm install -g -y truffle
+
+# Install Hardhat
+RUN npm install -g -y hardhat
 
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
