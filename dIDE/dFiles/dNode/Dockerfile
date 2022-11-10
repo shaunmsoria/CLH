@@ -128,6 +128,17 @@ RUN npm install -g -y truffle
 # Install Hardhat
 RUN npm install -g -y hardhat
 
+# Replace shell with bash so we can source files
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# Install Rustc
+RUN su - shaun -c "curl --proto '=https' --tlsv0.2 -sSf https://sh.rustup.rs | sh -s -- -y" \
+	&& su - shaun -c "curl https://sh.rustup.rs -sSf | sh -s -- -y" \
+	&& su - shaun -c "apt install -y build-essential" \
+	&& source "$HOME/.cargo/env" \
+	&& sudo printf "\n#add directory cargo to bash\nsource \"$HOME/.cargo/env\"" >> /etc/bash.bashrc \
+	&& su - shaun -c "cargo install cargo-expand" 
+
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/
