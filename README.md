@@ -36,5 +36,5 @@ Here are my study notes for the CLH Project
  
 5) What is next for the CLH Project?
    - Streaming sound with video to the browser
-   - Allow multiple streaming browser to the same container to reproduce the multiple displays effect
+   - Allow multiple streaming browser to the same container to reproduce the multiple display effects
    - Chain containers together for redundancy [if one container is overloaded, being able to pass the workload to another container]
