@@ -91,8 +91,7 @@ RUN sudo apt update \
 RUN sudo mkdir -p /home/shaun/Programs/ \
 	&& sudo mkdir -p /home/shaun/.config/nvim
 
-# Adding settings.sh & init.vim to their respective folders
-ADD settings.sh /home/shaun/
+# Adding  init.vim in the right location 
 ADD init.vim /home/shaun/.config/nvim
 
 # Install exuberant-ctags for nvim tagbar plugin
@@ -113,9 +112,9 @@ RUN curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash - \
 RUN npm install -y ganache-cli --global
 
 # Add UI version of Ganache
-RUN mkdir /home/shaun/apps
-ADD ganache-2.5.4-linux-x86_64.AppImage /home/shaun/apps
-RUN sudo chmod +x /home/shaun/apps/ganache-2.5.4-linux-x86_64.AppImage
+RUN mkdir /home/shaun/Programs/apps
+ADD ganache-2.5.4-linux-x86_64.AppImage /home/shaun/Programs/apps
+RUN sudo chmod +x /home/shaun/Programs/apps/ganache-2.5.4-linux-x86_64.AppImage
 
 # Install FUSE necessary to execute Ganache UI
 RUN sudo apt-get install fuse libfuse2 \
@@ -134,10 +133,15 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 # Install Rustc
 RUN su - shaun -c "curl --proto '=https' --tlsv0.2 -sSf https://sh.rustup.rs | sh -s -- -y" \
 	&& su - shaun -c "curl https://sh.rustup.rs -sSf | sh -s -- -y" \
-	&& su - shaun -c "apt install -y build-essential" \
-	&& source "$HOME/.cargo/env" \
-	&& sudo printf "\n#add directory cargo to bash\nsource \"$HOME/.cargo/env\"" >> /etc/bash.bashrc \
-	&& su - shaun -c "cargo install cargo-expand" 
+	&& su - shaun -c "echo 'shaun' | sudo -S apt install -y build-essential" \
+	&& source "/home/shaun/.cargo/env" \
+	&& sudo printf "\n#add directory cargo to bash\nsource \"/home/shaun/.cargo/env\"" >> /etc/bash.bashrc \
+	&& su - shaun -c "cargo install cargo-expand"
+
+# Install vim-plug
+RUN su - shaun -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+RUN su - shaun -c "nvim +PlugInstall +qall"
 
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
