@@ -130,18 +130,19 @@ RUN npm install -g -y hardhat
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-# Install Rustc
-RUN su - shaun -c "curl --proto '=https' --tlsv0.2 -sSf https://sh.rustup.rs | sh -s -- -y" \
-	&& su - shaun -c "curl https://sh.rustup.rs -sSf | sh -s -- -y" \
-	&& su - shaun -c "echo 'shaun' | sudo -S apt install -y build-essential" \
-	&& source "/home/shaun/.cargo/env" \
-	&& sudo printf "\n#add directory cargo to bash\nsource \"/home/shaun/.cargo/env\"" >> /etc/bash.bashrc \
-	&& su - shaun -c "cargo install cargo-expand"
-
 # Install vim-plug
 RUN su - shaun -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 RUN su - shaun -c "nvim +PlugInstall +qall"
+
+# Install Rustc
+ARG PASS_WD
+RUN su - shaun -c "curl --proto '=https' --tlsv0.2 -sSf https://sh.rustup.rs | sh -s -- -y" \
+	&& su - shaun -c "curl https://sh.rustup.rs -sSf | sh -s -- -y" \
+	&& su - shaun -c "echo '${PASS_WD}' | sudo -S apt install -y build-essential" \
+	&& source "/home/shaun/.cargo/env" \
+	&& sudo printf "\n#add directory cargo to bash\nsource \"/home/shaun/.cargo/env\"" >> /etc/bash.bashrc \
+	&& su - shaun -c "cargo install cargo-expand"
 
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/

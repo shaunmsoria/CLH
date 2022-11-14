@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  shaun-app:
+    container_name: shaun-app
+    hostname: shaun-app
+    image: node:7
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PASS_WD: ${P_WD}
+    networks: 
+      - shaun-net
+    volumes:
+      - shaun-data:/data
+      - /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume
+    privileged: true
+    shm_size: 2gb
+    env_file: 
+      - .env
+
+networks:
+  shaun-net:
+    external: true
+    name: shaun-net
+
+volumes:
+  shaun-data:
+    external: true
+    name: shaun-data
