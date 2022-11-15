@@ -5,12 +5,13 @@ services:
   shaun-app:
     container_name: shaun-app
     hostname: shaun-app
-    image: node:7
+    image: node:9
     build: 
       context: .
       dockerfile: Dockerfile
       args:
-        PASS_WD: ${P_WD}
+        LOGIN: ${U_LOG}
+        PASS_WD: ${U_PWD}
     networks: 
       - shaun-net
     volumes:

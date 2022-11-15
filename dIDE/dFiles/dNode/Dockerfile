@@ -8,10 +8,14 @@ FROM ubuntu:22.04
 RUN apt-get update -y \
 	&& apt-get clean
 
+# Initialising Login & Password from .env
+ARG LOGIN
+ARG PASS_WD
+
 # Add shaun as a user in the system
 RUN useradd --home-dir /data --shell /bin/bash shaun \
-	&& echo "shaun:shaun" | chpasswd && adduser shaun sudo \
-	&& mkdir -p /home/shaun && chown shaun:shaun /home/shaun \
+	&& echo "${LOGIN}:${PASS_WD}" | chpasswd && adduser shaun sudo \
+	&& mkdir -p /home/shaun && chown ${LOGIN}:${PASS_WD} /home/shaun \
 	&& mkdir -p /data
 VOLUME /data
 
@@ -49,7 +53,7 @@ RUN apt update && apt upgrade -y \
 	&& echo deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main | tee /etc/apt/sources.list.d/google-chrome.list \
 	&& apt update \
 	&& apt install google-chrome-stable -y \
-	&& chown -R shaun:shaun /home/shaun
+	&& chown -R ${LOGIN}:${PASS_WD} /home/shaun
 
 ## Changing shaun Home Directory
 RUN sudo usermod -d /home/shaun shaun
@@ -136,7 +140,7 @@ RUN su - shaun -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/au
 RUN su - shaun -c "nvim +PlugInstall +qall"
 
 # Install Rustc
-ARG PASS_WD
+# ARG PASS_WD
 RUN su - shaun -c "curl --proto '=https' --tlsv0.2 -sSf https://sh.rustup.rs | sh -s -- -y" \
 	&& su - shaun -c "curl https://sh.rustup.rs -sSf | sh -s -- -y" \
 	&& su - shaun -c "echo '${PASS_WD}' | sudo -S apt install -y build-essential" \
@@ -150,6 +154,9 @@ COPY supervisord.conf /etc/
 EXPOSE 8080
 
 CMD ["sh", "-c", "chown shaun:shaun /data /dev/stdout && exec gosu shaun supervisord"]
+
+#RUN chown ${LOGIN}:${PASS_WD} /data /dev/stdout
+
 
 ### CLI CMD 
 
