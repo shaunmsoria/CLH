@@ -95,13 +95,6 @@ RUN sudo apt update \
 RUN sudo mkdir -p /home/shaun/Programs/ \
 	&& sudo mkdir -p /home/shaun/.config/nvim
 
-# Adding  init.vim in the right location 
-ADD init.vim /home/shaun/.config/nvim
-
-# Install exuberant-ctags for nvim tagbar plugin
-RUN sudo apt update \
-	&& sudo apt install exuberant-ctags
-
 # Install jq for json manipulation in the shell
 RUN sudo apt update \
 	&& sudo apt upgrade -y \
@@ -134,13 +127,7 @@ RUN npm install -g -y hardhat
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-# Install vim-plug
-RUN su - shaun -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-RUN su - shaun -c "nvim +PlugInstall +qall"
-
 # Install Rustc
-# ARG PASS_WD
 RUN su - shaun -c "curl --proto '=https' --tlsv0.2 -sSf https://sh.rustup.rs | sh -s -- -y" \
 	&& su - shaun -c "curl https://sh.rustup.rs -sSf | sh -s -- -y" \
 	&& su - shaun -c "echo '${PASS_WD}' | sudo -S apt install -y build-essential" \
@@ -148,15 +135,31 @@ RUN su - shaun -c "curl --proto '=https' --tlsv0.2 -sSf https://sh.rustup.rs | s
 	&& sudo printf "\n#add directory cargo to bash\nsource \"/home/shaun/.cargo/env\"" >> /etc/bash.bashrc \
 	&& su - shaun -c "cargo install cargo-expand"
 
+# Securing Container
+RUN sudo printf "\n#manage U_LOG and U_PWD\n export U_LOG=\"\"\nU_PWD=\"\"" >> /etc/bash.bashrc
+
+# Adding  init.vim in the right location 
+ADD init.vim /home/shaun/.config/nvim
+
+# Adding coc.vim to the right location
+RUN su - shaun -c "echo '${PASS_WD}' | sudo -S mkdir /home/shaun/.config/nvim/plug-config"
+ADD coc.vim /home/shaun/.config/nvim/plug-config/
+
+# Install exuberant-ctags for nvim tagbar plugin
+RUN sudo apt update \
+	&& sudo apt install exuberant-ctags
+
+# Install vim-plug
+RUN su - shaun -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+RUN su - shaun -c "nvim +PlugInstall +qall"
+
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
 COPY supervisord.conf /etc/
 EXPOSE 8080
 
 CMD ["sh", "-c", "chown shaun:shaun /data /dev/stdout && exec gosu shaun supervisord"]
-
-#RUN chown ${LOGIN}:${PASS_WD} /data /dev/stdout
-
 
 ### CLI CMD 
 

@@ -18,7 +18,15 @@ Plug 'https://github.com/rafi/awesome-vim-colorschemes'			" Retro Scheme
 Plug 'https://github.com/ryanoasis/vim-devicons'                " Developer Icons
 Plug 'https://github.com/tc50cal/vim-terminal'                  " Vim Terminal
 Plug 'https://github.com/terryma/vim-multiple-cursors'			" CTRL + N for multiple cursors
-Plug 'https://github.com/preservim/tagbar'                      " Tagbar for code navigation
+Plug 'neoclide/coc.nvim', {'branch': 'release'}					" Conquer on Completion
+Plug 'jiangmiao/auto-pairs'										" this will auto close ( [ {
+
+let g:coc_global_extensions = ['coc-json', 'coc-css', 'coc-html', 'coc-htmlhint', 'coc-html-css-support', 'coc-docker', 'coc-highlight', 'coc-java', 'coc-prettier', 'coc-rust-analyzer', 'coc-solidity', 'coc-sql', 'coc-sh', 'coc-tsserver']
+
+" these two plugins will add highlighting and indenting to JSX and TSX files.
+Plug 'yuezk/vim-js'
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'maxmellon/vim-jsx-pretty'
 
 call plug#end()
 
@@ -29,11 +37,12 @@ call plug#end()
 
 nnoremap <C-f> :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
-nnoremap <S-Left> :NERDTreeToggle<CR>           " TO BE TESTED
-nnoremap <S-Down> :TerminalSplit bash<CR>       " TO BE TESTED
-nnoremap <S-Up> :NERDTreeRefreshRoot<CR>        " TO BE TESTED
+nnoremap <S-Left> :NERDTreeToggle<CR>           
+nnoremap <S-Down> :TerminalSplit bash<CR>      
+nnoremap <S-Up> :NERDTreeRefreshRoot<CR>      
 
-nmap <C-Right> : TagbarToggle<CR>
 
 let g:NERDTreeDirArrowExpandable="+"
 let g:NERDTreeDirArrowCollapsible="~"
+
+source /home/shaun/.config/nvim/plug-config/coc.vim
