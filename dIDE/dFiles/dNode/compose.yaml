@@ -5,7 +5,7 @@ services:
   shaun-app:
     container_name: shaun-app
     hostname: shaun-app
-    image: node:9
+    image: node:11
     build: 
       context: .
       dockerfile: Dockerfile

@@ -21,7 +21,7 @@ Plug 'https://github.com/terryma/vim-multiple-cursors'			" CTRL + N for multiple
 Plug 'neoclide/coc.nvim', {'branch': 'release'}					" Conquer on Completion
 Plug 'jiangmiao/auto-pairs'										" this will auto close ( [ {
 
-let g:coc_global_extensions = ['coc-json', 'coc-css', 'coc-html', 'coc-htmlhint', 'coc-html-css-support', 'coc-docker', 'coc-highlight', 'coc-java', 'coc-prettier', 'coc-rust-analyzer', 'coc-solidity', 'coc-sql', 'coc-sh', 'coc-tsserver']
+let g:coc_global_extensions = ['coc-json', 'coc-css', 'coc-html', 'coc-htmlhint', 'coc-html-css-support', 'coc-docker', 'coc-highlight', 'coc-java', 'coc-prettier', 'coc-rls', 'coc-rust-analyzer', 'coc-solidity', 'coc-sql', 'coc-sh', 'coc-tsserver', 'coc-snippets', 'coc-vimlsp']
 
 " these two plugins will add highlighting and indenting to JSX and TSX files.
 Plug 'yuezk/vim-js'
@@ -33,7 +33,7 @@ call plug#end()
 
 :set completeopt-=preview                                       " For no Previews
 
-:colorscheme murphy
+:colorscheme challenger_deep
 
 nnoremap <C-f> :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>

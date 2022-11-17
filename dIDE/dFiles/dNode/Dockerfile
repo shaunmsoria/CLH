@@ -133,10 +133,18 @@ RUN su - shaun -c "curl --proto '=https' --tlsv0.2 -sSf https://sh.rustup.rs | s
 	&& su - shaun -c "echo '${PASS_WD}' | sudo -S apt install -y build-essential" \
 	&& source "/home/shaun/.cargo/env" \
 	&& sudo printf "\n#add directory cargo to bash\nsource \"/home/shaun/.cargo/env\"" >> /etc/bash.bashrc \
-	&& su - shaun -c "cargo install cargo-expand"
+	&& su - shaun -c "cargo install cargo-expand" \
+	&& su - shaun -c "rustup component add rls rust-analysis rust-src"
 
 # Securing Container
 RUN sudo printf "\n#manage U_LOG and U_PWD\n export U_LOG=\"\"\nU_PWD=\"\"" >> /etc/bash.bashrc
+
+# Install snapd
+RUN sudo apt update \
+	&& sudo apt -y install snapd
+
+# Install solc
+# RUN sudo snap install solc ## doesn't work
 
 # Adding  init.vim in the right location 
 ADD init.vim /home/shaun/.config/nvim
@@ -144,6 +152,7 @@ ADD init.vim /home/shaun/.config/nvim
 # Adding coc.vim to the right location
 RUN su - shaun -c "echo '${PASS_WD}' | sudo -S mkdir /home/shaun/.config/nvim/plug-config"
 ADD coc.vim /home/shaun/.config/nvim/plug-config/
+ADD coc-settings.json /home/shaun/.config/nvim/
 
 # Install exuberant-ctags for nvim tagbar plugin
 RUN sudo apt update \
