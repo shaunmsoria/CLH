@@ -53,7 +53,7 @@ RUN apt update && apt upgrade -y \
 	&& echo deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main | tee /etc/apt/sources.list.d/google-chrome.list \
 	&& apt update \
 	&& apt install google-chrome-stable -y \
-	&& chown -R ${LOGIN}:${PASS_WD} /home/shaun
+	&& chown -R ${LOGIN}:${LOGIN} /home/shaun
 
 ## Changing shaun Home Directory
 RUN sudo usermod -d /home/shaun shaun
@@ -92,8 +92,8 @@ RUN sudo apt update \
 	&& sudo apt install -y tree 
 
 # Creating Program & nvim folders
-RUN sudo mkdir -p /home/shaun/Programs/ \
-	&& sudo mkdir -p /home/shaun/.config/nvim
+RUN su - shaun -c "echo '${PASS_WD}' | sudo -S mkdir -p /home/shaun/Programs/" \
+	&& su - shaun -c "echo '${PASS_WD}' | sudo -S mkdir -p /home/shaun/.config/nvim"
 
 # Install jq for json manipulation in the shell
 RUN sudo apt update \
@@ -109,7 +109,7 @@ RUN curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash - \
 RUN npm install -y ganache-cli --global
 
 # Add UI version of Ganache
-RUN mkdir /home/shaun/Programs/apps
+RUN su - shaun -c "echo '${PASS_WD}' | sudo -S mkdir /home/shaun/Programs/apps"
 ADD ganache-2.5.4-linux-x86_64.AppImage /home/shaun/Programs/apps
 RUN sudo chmod +x /home/shaun/Programs/apps/ganache-2.5.4-linux-x86_64.AppImage
 
@@ -139,12 +139,11 @@ RUN su - shaun -c "curl --proto '=https' --tlsv0.2 -sSf https://sh.rustup.rs | s
 # Securing Container
 RUN sudo printf "\n#manage U_LOG and U_PWD\n export U_LOG=\"\"\nU_PWD=\"\"" >> /etc/bash.bashrc
 
-# Install snapd
-RUN sudo apt update \
-	&& sudo apt -y install snapd
+# Install Yarn
+RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee
+RUN apt install -y yarn
 
-# Install solc
-# RUN sudo snap install solc ## doesn't work
 
 # Adding  init.vim in the right location 
 ADD init.vim /home/shaun/.config/nvim
@@ -162,6 +161,10 @@ RUN sudo apt update \
 RUN su - shaun -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 RUN su - shaun -c "nvim +PlugInstall +qall"
+
+# Install solc as coc-solidity dependency
+RUN su - shaun -c "echo '${PASS_WD}' | sudo -S curl -o /usr/bin/solc -fL https://github.com/ethereum/solidity/releases/download/v0.4.25/solc-static-linux \
+    && echo '${PASS_WD}' | sudo -S chmod u+x /usr/bin/solc"
 
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
