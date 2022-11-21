@@ -162,18 +162,10 @@ RUN su - shaun -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/au
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 RUN su - shaun -c "nvim +PlugInstall +qall"
 
-# Install solc as coc-solidity dependency
-RUN su - shaun -c "echo '${PASS_WD}' | sudo -S curl -o /usr/bin/solc -fL https://github.com/ethereum/solidity/releases/download/v0.4.25/solc-static-linux \
-    && echo '${PASS_WD}' | sudo -S chmod u+x /usr/bin/solc"
-RUN sudo chown shaun:shaun /usr/bin/solc
-
-# Install snapd
-ENV PATH /snap/bin:$PATH
-ADD snap /usr/local/bin/snap
-RUN apt-get update
-RUN apt-get install -y snapd squashfuse
-RUN systemctl enable snapd
-
+# Install solc Compiler for coc-solidity dependency
+RUN sudo add-apt-repository ppa:ethereum/ethereum
+RUN sudo apt-get update
+RUN sudo apt-get install solc
 
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/

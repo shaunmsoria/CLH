@@ -5,7 +5,7 @@ services:
   shaun-app:
     container_name: shaun-app
     hostname: shaun-app
-    image: node:12
+    image: node:l
     build: 
       context: .
       dockerfile: Dockerfile
@@ -17,7 +17,8 @@ services:
     volumes:
       - shaun-data:/data
       - /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume
-      - /lib/modules:/lib/modules:ro
+      - /run/snapd.socket:/run/snapd.socket
+      - /var/lib/snapd/snap/bin/solc:/var/lib/snapd/snap/bin/solc
     privileged: true
     shm_size: 2gb
     env_file: 
