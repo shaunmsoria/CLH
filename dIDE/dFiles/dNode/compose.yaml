@@ -7,15 +7,15 @@ services:
     hostname: shaun-web
     image: shaun/caddy:1
     build:
-      context: ./caddy/.
+      context: ../caddy/.
       dockerfile: Dockerfile
     networks:
       - shaun-net
-    volume:
+    volumes:
       - shaun-data:/data
     restart: unless-stopped
     env_file:
-      - ./dNode/.env
+      - .env
     environment:
       - APP_USERNAME=${APP_USERNAME}
       - APP_PASSWORD_HASH=${APP_PASSWORD_HASH}
@@ -29,7 +29,7 @@ services:
     hostname: shaun-app
     image: node:l
     build: 
-      context: ./dNode/.
+      context: .
       dockerfile: Dockerfile
       args:
         LOGIN: ${U_LOG}
@@ -39,19 +39,18 @@ services:
     volumes:
       - shaun-data:/data
       - /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume
-      - /run/snapd.socket:/run/snapd.socket
-      - /var/lib/snapd/snap/bin/solc:/var/lib/snapd/snap/bin/solc
     privileged: true
     shm_size: 2gb
     env_file: 
-      - ./dNode/.env
+      - .env
 
 networks:
   shaun-net:
-    external: true
+    driver: bridge
     name: shaun-net
 
 volumes:
   shaun-data:
-    external: true
+    driver: local
     name: shaun-data
+
