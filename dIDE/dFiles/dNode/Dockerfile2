@@ -46,9 +46,9 @@ RUN apt update -y \
 	&& sudo cat /home/shaun/rc.lua > /etc/xdg/awesome/rc.lua \
 	&& sudo rm -f /home/shaun/rc.lua
 
-# Installing google chrome stable
+# Insalling google chrome stable
 RUN apt update && apt upgrade -y \
-	&& apt install gnupg2 ubuntu-keyring -y \
+	&& apt install ca-certificates gnupg2 ubuntu-keyring -y \
 	&& wget -O- https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | tee /usr/share/keyrings/google-chrome.gpg \
 	&& echo deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main | tee /etc/apt/sources.list.d/google-chrome.list \
 	&& apt update \
@@ -89,11 +89,11 @@ RUN apt update \
 
 # Install Tree
 RUN sudo apt update \
-	&& sudo apt install -y tree
+	&& sudo apt install -y tree 
 
 # Creating Program & nvim folders
-RUN mkdir -p /home/shaun/Programs \
-	&& mkdir -p /home/shaun/.config/nvim
+RUN su - shaun -c "echo '${PASS_WD}' | sudo -S mkdir -p /home/shaun/Programs/" \
+	&& su - shaun -c "echo '${PASS_WD}' | sudo -S mkdir -p /home/shaun/.config/nvim"
 
 # Install jq for json manipulation in the shell
 RUN sudo apt update \
@@ -109,7 +109,7 @@ RUN curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash - \
 RUN npm install -y ganache-cli --global
 
 # Add UI version of Ganache
-RUN mkdir /home/shaun/Programs/apps
+RUN su - shaun -c "echo '${PASS_WD}' | sudo -S mkdir /home/shaun/Programs/apps"
 ADD ganache-2.5.4-linux-x86_64.AppImage /home/shaun/Programs/apps
 RUN sudo chmod +x /home/shaun/Programs/apps/ganache-2.5.4-linux-x86_64.AppImage
 
@@ -149,14 +149,18 @@ RUN apt install -y yarn
 ADD init.vim /home/shaun/.config/nvim
 
 # Adding coc.vim to the right location
-RUN mkdir /home/shaun/.config/nvim/plug-config
+RUN su - shaun -c "echo '${PASS_WD}' | sudo -S mkdir /home/shaun/.config/nvim/plug-config"
 ADD coc.vim /home/shaun/.config/nvim/plug-config/
 ADD coc-settings.json /home/shaun/.config/nvim/
 
+# Install exuberant-ctags for nvim tagbar plugin
+RUN sudo apt update \
+	&& sudo apt install exuberant-ctags
+
 # Install vim-plug
-RUN curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-RUN nvim +PlugInstall +qall
+RUN su - shaun -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+RUN su - shaun -c "nvim +PlugInstall +qall"
 
 # Install solc Compiler for coc-solidity dependency
 RUN sudo add-apt-repository ppa:ethereum/ethereum
