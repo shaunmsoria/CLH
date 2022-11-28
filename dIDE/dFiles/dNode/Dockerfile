@@ -136,6 +136,7 @@ RUN su - shaun -c "curl --proto '=https' --tlsv0.2 -sSf https://sh.rustup.rs | s
 	&& su - shaun -c "cargo install cargo-expand" \
 	&& su - shaun -c "rustup component add rls rust-analysis rust-src"
 
+
 # Securing Container
 RUN sudo printf "\n#manage U_LOG and U_PWD\n export U_LOG=\"\"\nU_PWD=\"\"" >> /etc/bash.bashrc
 
@@ -154,9 +155,9 @@ ADD coc.vim /home/shaun/.config/nvim/plug-config/
 ADD coc-settings.json /home/shaun/.config/nvim/
 
 # Install vim-plug
-RUN curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-RUN nvim +PlugInstall +qall
+RUN su - shaun -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+RUN su - shaun -c "nvim +PlugInstall +qall"
 
 # Install solc Compiler for coc-solidity dependency
 RUN sudo add-apt-repository ppa:ethereum/ethereum
