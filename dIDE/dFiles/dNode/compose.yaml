@@ -47,6 +47,7 @@ services:
 networks:
   shaun-net:
     driver: bridge
+    external: true
     name: shaun-net
 
 volumes:
