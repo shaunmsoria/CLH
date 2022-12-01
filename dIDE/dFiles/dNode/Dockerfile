@@ -161,11 +161,8 @@ RUN curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 RUN nvim +PlugInstall +qall
 
-# Install solc Compiler for coc-solidity dependency
+# change active USER to root 
 USER root
-RUN sudo add-apt-repository ppa:ethereum/ethereum
-RUN sudo apt-get update
-RUN sudo apt-get install solc
 
 # Copying necessary files
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/

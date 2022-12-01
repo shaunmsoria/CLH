@@ -38,7 +38,7 @@ services:
       - shaun-net
     volumes:
       - shaun-data:/data
-      - /home/shaun/Program/dockerfiles/dIDE/volume:/home/shaun/volume
+      - /home/shaun/Programs/volume:/home/shaun/volume
     privileged: true
     shm_size: 2gb
     env_file: 
