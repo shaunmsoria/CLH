@@ -40,8 +40,7 @@ RUN apt-get update -y \
 ADD rc.lua /home/shaun/
 RUN apt update -y \
 	&& apt install -y awesome \
-	&& mkdir /home/shaun/.config \
-	&& mkdir /home/shaun/.config/awesome/ \
+	&& mkdir -p /home/shaun/.config/awesome/ \
 	&& cp /usr/share/awesome/themes/default/theme.lua /home/shaun/.config/awesome/ \
 	&& sudo cat /home/shaun/rc.lua > /etc/xdg/awesome/rc.lua \
 	&& sudo rm -f /home/shaun/rc.lua
