@@ -1,7 +1,26 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  
+  shaun-app:
+    container_name: shaun-app
+    hostname: shaun-app
+    image: node:l
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        LOGIN: ${U_LOG}
+        PASS_WD: ${U_PWD}
+    networks:
+      - shaun-net
+    volumes:
+      - shaun-data:/data
+      - /home/shaun/Programs/volume:/home/shaun/volume
+    privileged: true
+    shm_size: 2gb
+    env_file:
+      - .env
+
   shaun-web:
     container_name: shaun-web
     hostname: shaun-web
@@ -22,28 +41,6 @@ services:
     ports:
       - 8080:8080
 
-
-
-  shaun-app:
-    container_name: shaun-app
-    hostname: shaun-app
-    image: node:l
-    build: 
-      context: .
-      dockerfile: Dockerfile
-      args:
-        LOGIN: ${U_LOG}
-        PASS_WD: ${U_PWD}
-    networks: 
-      - shaun-net
-    volumes:
-      - shaun-data:/data
-      - /home/shaun/Programs/volume:/home/shaun/volume
-    privileged: true
-    shm_size: 2gb
-    env_file: 
-      - .env
-
 networks:
   shaun-net:
     driver: bridge
@@ -54,4 +51,3 @@ volumes:
   shaun-data:
     driver: local
     name: shaun-data
-
