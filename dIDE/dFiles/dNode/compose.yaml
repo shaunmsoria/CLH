@@ -36,7 +36,7 @@ services:
       - shaun-data:/data
       - /home/shaun/Programs/volume:/home/shaun/volume
     privileged: true
-    shm_size: 2gb
+    shm_size: 3gb
     env_file:
       - .env
 

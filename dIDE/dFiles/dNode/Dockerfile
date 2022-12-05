@@ -15,7 +15,8 @@ ARG PASS_WD
 # Add shaun as a user in the system
 RUN useradd --home-dir /data --shell /bin/bash shaun \
 	&& echo "${LOGIN}:${PASS_WD}" | chpasswd && adduser shaun sudo \
-	&& mkdir -p /home/shaun && chown ${LOGIN}:${PASS_WD} /home/shaun \
+	&& mkdir -p /home/shaun/ \
+	&& chown ${LOGIN}:${LOGIN} /home/shaun/ \
 	&& mkdir -p /data
 VOLUME /data
 
@@ -82,7 +83,7 @@ RUN sudo cp /home/shaun/.config/kitty/kitty-themes/themes/Tomorrow_Night_Blue.co
 	&& sudo mv /home/shaun/.config/kitty/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty/theme.conf
 RUN sudo echo "include /home/shaun/.config/kitty/theme.conf" >> /etc/xdg/kitty/kitty.conf
 
-# Instal Curl
+# Install Curl
 RUN apt update \
 	&& sudo apt install -y curl
 
