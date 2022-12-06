@@ -91,11 +91,10 @@ RUN apt update \
 RUN sudo apt update \
 	&& sudo apt install -y tree
 
-# Creating Program & nvim & apps folders
+# Creating Program & nvims folders
 USER shaun
 RUN mkdir -p /home/shaun/Programs \
 	&& mkdir -p /home/shaun/.config/nvim \
-	&& mkdir /home/shaun/Programs/apps
 
 # Install jq for json manipulation in the shell
 USER root
