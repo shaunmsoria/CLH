@@ -94,7 +94,7 @@ RUN sudo apt update \
 # Creating Program & nvims folders
 USER shaun
 RUN mkdir -p /home/shaun/Programs \
-	&& mkdir -p /home/shaun/.config/nvim \
+	&& mkdir -p /home/shaun/.config/nvim
 
 # Install jq for json manipulation in the shell
 USER root
