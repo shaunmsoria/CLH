@@ -111,6 +111,15 @@ RUN curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash - \
 # Install Ganache
 RUN npm install -y ganache-cli --global
 
+# Add UI version of Ganache
+ADD ganache-2.5.4-linux-x86_64.AppImage /home/shaun/Programs/apps
+RUN sudo chmod +x /home/shaun/Programs/apps/ganache-2.5.4-linux-x86_64.AppImage
+
+# Install FUSE necessary to execute Ganache UI
+RUN sudo apt-get install fuse libfuse2 \
+	&& sudo addgroup fuse \
+	&& sudo adduser $USER shaun fuse
+
 # Install Truffle
 RUN npm install -g -y truffle
 
