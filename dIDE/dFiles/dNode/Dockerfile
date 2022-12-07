@@ -4,6 +4,7 @@ RUN go mod init build \
 	&& go get github.com/geek1011/easy-novnc@v1.1.0 \
 	&& go build -o /bin/easy-novnc github.com/geek1011/easy-novnc
 
+# Create ubuntu image
 FROM ubuntu:22.04
 RUN apt-get update -y \
 	&& apt-get clean
@@ -78,7 +79,7 @@ RUN sudo apt update \
 # Set Kitty.conf 
 RUN mkdir -p home/shaun/.config/kitty/kitty-themes
 RUN sudo git clone --depth 1 https://github.com/dexpota/kitty-themes.git /home/shaun/.config/kitty/kitty-themes
-RUN cd /home/shaun/.config/kitty
+# RUN cd /home/shaun/.config/kitty
 RUN sudo cp /home/shaun/.config/kitty/kitty-themes/themes/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty \
 	&& sudo mv /home/shaun/.config/kitty/Tomorrow_Night_Blue.conf /home/shaun/.config/kitty/theme.conf
 RUN sudo echo "include /home/shaun/.config/kitty/theme.conf" >> /etc/xdg/kitty/kitty.conf
