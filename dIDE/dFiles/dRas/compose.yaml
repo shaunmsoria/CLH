@@ -1,0 +1,52 @@
+version: "3.8"
+services:
+  shaun-web:
+    container_name: shaun-web
+    hostname: shaun-web
+    image: shaun/caddy:1
+    build:
+      context: ../caddy/.
+      dockerfile: Dockerfile
+    networks:
+      - shaun-net
+    volumes:
+      - shaun-data:/data
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - APP_USERNAME=${APP_USERNAME}
+      - APP_PASSWORD_HASH=${APP_PASSWORD_HASH}
+    ports:
+      - 8080:8080
+
+  shaun-app:
+    container_name: shaun-app
+    hostname: shaun-app
+    image: node:l
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        LOGIN: ${U_LOG}
+        PASS_WD: ${U_PWD}
+    networks:
+      - shaun-net
+    volumes:
+      - shaun-data:/data
+      - /home/shaun/Programs/volume:/home/shaun/volume
+    privileged: true
+    shm_size: 3gb
+    env_file:
+      - .env
+
+networks:
+  shaun-net:
+    driver: bridge
+    external: true
+    name: shaun-net
+
+volumes:
+  shaun-data:
+    driver: local
+    name: shaun-data
